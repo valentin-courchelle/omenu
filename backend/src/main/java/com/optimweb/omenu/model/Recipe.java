@@ -18,6 +18,8 @@ public class Recipe {
 
     private String name;
 
+    private String description;
+
     private int duration;
 
     private float rating;

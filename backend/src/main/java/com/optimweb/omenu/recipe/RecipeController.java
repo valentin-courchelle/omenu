@@ -17,7 +17,7 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Recipe>> getAllRecipe(){
         return ResponseEntity.ok().body(this.recipeService.getAllRecipe());
     }
@@ -27,14 +27,14 @@ public class RecipeController {
         return ResponseEntity.ok().body(this.recipeService.getRecipe(id));
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe){
         return ResponseEntity.ok().body(this.recipeService.saveRecipe(recipe));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> updateRecipe(@PathVariable long id, @RequestBody Recipe recipe){
-        return ResponseEntity.ok().body(this.recipeService.updateRecipe(recipe));
+        return ResponseEntity.ok().body(this.recipeService.updateRecipe(id, recipe));
     }
 
     @DeleteMapping("/{id}")

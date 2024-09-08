@@ -15,10 +15,13 @@ import java.sql.Date;
 public class RecipeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_seq")
+    @SequenceGenerator(name = "recipe_seq", sequenceName = "recipe_seq", allocationSize = 1)
     private Long id;
 
     private String name;
+
+    private String description;
 
     /**
      * Duration of the recipe in minutes
@@ -30,10 +33,13 @@ public class RecipeEntity {
      */
     private float rating;
 
+    @Column(name = "nb_people")
     private int nbPeople;
 
+    @Column(name = "season_start")
     private Date seasonStart;
 
+    @Column(name = "season_end")
     private Date seasonEnd;
 
     //TODO

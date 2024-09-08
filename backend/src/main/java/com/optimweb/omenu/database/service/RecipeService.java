@@ -31,28 +31,27 @@ public class RecipeService {
     }
 
     public List<Recipe> getAllRecipe() {
-        return this.repository.findAll().stream().map(this::toRecipe).collect(Collectors.toList());
+        return this.repository.findAll().stream().map(this::toRecipe).toList();
     }
 
     public Recipe saveRecipe(Recipe recipe) {
         return this.toRecipe(this.repository.save(this.toEntity(recipe)));
     }
 
-    public Recipe updateRecipe(Recipe recipe) {
-        Optional<RecipeEntity> recipeOpt = this.repository.findById(recipe.getId());
+    public Recipe updateRecipe(long id, Recipe recipe) {
+        Optional<RecipeEntity> recipeOpt = this.repository.findById(id);
         if (recipeOpt.isEmpty()) {
-            log.error(NO_RECIPE_FOUND_WITH_ID + recipe.getId());
+            log.error(NO_RECIPE_FOUND_WITH_ID + id);
             return null;
         }
-        RecipeEntity entity = recipeOpt.get();
         RecipeEntity updatedRecipe = this.toEntity(recipe);
-        updatedRecipe.setId(entity.getId());
+        updatedRecipe.setId(id);
         updatedRecipe = this.repository.save(updatedRecipe);
-        log.info("Recipe with id "+recipe.getId()+" successfully updated");
+        log.info("Recipe with id " + recipe.getId() + " successfully updated");
         return this.toRecipe(updatedRecipe);
     }
 
-    public void deleteRecipe(long id){
+    public void deleteRecipe(long id) {
         Optional<RecipeEntity> recipeOpt = this.repository.findById(id);
         if (recipeOpt.isEmpty()) {
             log.error(NO_RECIPE_FOUND_WITH_ID + id);
@@ -60,17 +59,18 @@ public class RecipeService {
         }
         RecipeEntity entity = recipeOpt.get();
         this.repository.delete(entity);
-        log.info("Recipe with id "+id+" successfully deleted");
+        log.info("Recipe with id " + id + " successfully deleted");
     }
 
     private RecipeEntity toEntity(Recipe recipe) {
         RecipeEntity entity = new RecipeEntity();
         entity.setName(recipe.getName());
+        entity.setDescription(recipe.getDescription());
         entity.setDuration(recipe.getDuration());
         entity.setNbPeople(recipe.getNbPeople());
         entity.setRating(recipe.getRating());
-        entity.setSeasonStart(new java.sql.Date(recipe.getSeasonStart().getTime()));
-        entity.setSeasonEnd(new java.sql.Date(recipe.getSeasonEnd().getTime()));
+        entity.setSeasonStart(recipe.getSeasonStart() != null ? new java.sql.Date(recipe.getSeasonStart().getTime()) : null);
+        entity.setSeasonEnd(recipe.getSeasonEnd() != null ? new java.sql.Date(recipe.getSeasonEnd().getTime()) : null);
         return entity;
     }
 
@@ -78,11 +78,12 @@ public class RecipeService {
         return Recipe.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .description(entity.getDescription())
                 .duration(entity.getDuration())
                 .nbPeople(entity.getNbPeople())
                 .rating(entity.getRating())
-                .seasonStart(new Date(entity.getSeasonStart().getTime()))
-                .seasonEnd(new Date(entity.getSeasonEnd().getTime()))
+                .seasonStart(entity.getSeasonStart() != null ? new Date(entity.getSeasonStart().getTime()) : null)
+                .seasonEnd(entity.getSeasonEnd() != null ? new Date(entity.getSeasonEnd().getTime()) : null)
                 .build();
     }
 
