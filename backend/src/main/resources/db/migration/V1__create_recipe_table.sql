@@ -1,5 +1,5 @@
 -- ----------------------------
--- Create hibernate_sequence structure
+-- Create recipe_sequence structure
 -- ----------------------------
 CREATE SEQUENCE "public"."recipe_seq"
 INCREMENT 1

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -29,4 +30,6 @@ public class Recipe {
     private Date seasonStart;
 
     private Date seasonEnd;
+
+    private List<RecipeIngredient> ingredients;
 }

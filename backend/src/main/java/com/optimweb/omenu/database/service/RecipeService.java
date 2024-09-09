@@ -1,8 +1,11 @@
 package com.optimweb.omenu.database.service;
 
+import com.optimweb.omenu.database.entity.IngredientEntity;
 import com.optimweb.omenu.database.entity.RecipeEntity;
+import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.RecipeRepository;
 import com.optimweb.omenu.model.Recipe;
+import com.optimweb.omenu.model.RecipeIngredient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,6 +74,16 @@ public class RecipeService {
         entity.setRating(recipe.getRating());
         entity.setSeasonStart(recipe.getSeasonStart() != null ? new java.sql.Date(recipe.getSeasonStart().getTime()) : null);
         entity.setSeasonEnd(recipe.getSeasonEnd() != null ? new java.sql.Date(recipe.getSeasonEnd().getTime()) : null);
+        entity.setIngredients(recipe.getIngredients().stream().map(i->this.toEntity(i, entity)).toList());
+        return entity;
+    }
+
+    private RecipeIngredientEntity toEntity(RecipeIngredient ingredient, RecipeEntity recipeEntity){
+        RecipeIngredientEntity entity = new RecipeIngredientEntity();
+        entity.setRecipe(recipeEntity);
+        entity.setUnit(ingredient.getUnit());
+        entity.setQuantity(ingredient.getQuantity());
+        entity.setIngredient(new IngredientEntity(ingredient.getIngredientId(), ingredient.getName(), ingredient.getType()));
         return entity;
     }
 
@@ -84,6 +97,17 @@ public class RecipeService {
                 .rating(entity.getRating())
                 .seasonStart(entity.getSeasonStart() != null ? new Date(entity.getSeasonStart().getTime()) : null)
                 .seasonEnd(entity.getSeasonEnd() != null ? new Date(entity.getSeasonEnd().getTime()) : null)
+                .ingredients(entity.getIngredients().stream().map(this::toIngredient).toList())
+                .build();
+    }
+
+    private RecipeIngredient toIngredient(RecipeIngredientEntity recipeIngredientEntity) {
+        return RecipeIngredient.builder()
+                .ingredientId(recipeIngredientEntity.getIngredient().getId())
+                .type(recipeIngredientEntity.getIngredient().getType())
+                .unit(recipeIngredientEntity.getUnit())
+                .quantity(recipeIngredientEntity.getQuantity())
+                .name(recipeIngredientEntity.getIngredient().getName())
                 .build();
     }
 

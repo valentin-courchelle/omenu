@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,8 +43,11 @@ public class RecipeEntity {
     @Column(name = "season_end")
     private Date seasonEnd;
 
-    //TODO
-    //private List<Ingredient> ingredients;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "recipe",
+            fetch = FetchType.EAGER)
+    private List<RecipeIngredientEntity> ingredients;
 
 
 }
