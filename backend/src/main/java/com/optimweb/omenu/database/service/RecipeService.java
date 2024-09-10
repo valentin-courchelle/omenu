@@ -6,17 +6,19 @@ import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeIngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeRepository;
+import com.optimweb.omenu.exception.NotFoundException;
+import com.optimweb.omenu.model.IngredientType;
+import com.optimweb.omenu.model.Month;
 import com.optimweb.omenu.model.Recipe;
 import com.optimweb.omenu.model.RecipeIngredient;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +46,7 @@ public class RecipeService {
         return this.recipeRepository.findAll().stream().map(this::toRecipe).toList();
     }
 
-    public Recipe saveRecipe(Recipe recipe) {
+    public Recipe saveRecipe(Recipe recipe) throws NotFoundException {
         return this.toRecipe(this.recipeRepository.save(this.toEntity(recipe)));
     }
 
@@ -124,7 +126,7 @@ public class RecipeService {
         return currentIngredients;
     }
 
-    private RecipeEntity toEntity(Recipe recipe) {
+    private RecipeEntity toEntity(Recipe recipe) throws NotFoundException {
         RecipeEntity entity = new RecipeEntity();
         entity.setName(recipe.getName());
         entity.setDescription(recipe.getDescription());
@@ -132,16 +134,29 @@ public class RecipeService {
         entity.setNbPeople(recipe.getNbPeople());
         entity.setRating(recipe.getRating());
         entity.setSeason(recipe.getSeason());
-        entity.setIngredients(recipe.getIngredients().stream().map(i -> this.toEntity(i, entity)).toList());
+        List<RecipeIngredientEntity> recipeIngredientEntities = new ArrayList<>();
+        for(RecipeIngredient recipeIngredient : recipe.getIngredients()){
+            recipeIngredientEntities.add(this.toEntity(recipeIngredient, entity));
+        }
+        entity.setIngredients(recipeIngredientEntities);
         return entity;
     }
 
-    private RecipeIngredientEntity toEntity(RecipeIngredient ingredient, RecipeEntity recipeEntity) {
+    private RecipeIngredientEntity toEntity(RecipeIngredient ingredient, RecipeEntity recipeEntity) throws NotFoundException {
         RecipeIngredientEntity entity = new RecipeIngredientEntity();
         entity.setRecipe(recipeEntity);
         entity.setUnit(ingredient.getUnit());
         entity.setQuantity(ingredient.getQuantity());
-        entity.setIngredient(new IngredientEntity(ingredient.getIngredientId(), ingredient.getName(), ingredient.getType()));
+        Optional<IngredientEntity> ingredientOpt = this.ingredientRepository.findById(ingredient.getIngredientId());
+        if (ingredientOpt.isEmpty()) {
+            String message = "No ingredient found with id" + ingredient.getIngredientId();
+            log.error(message);
+            throw new NotFoundException(message);
+        } else {
+            IngredientEntity ingredientEntity = ingredientOpt.get();
+            ingredientEntity.getRecipeIngredients().add(entity);
+            entity.setIngredient(ingredientEntity);
+        }
         return entity;
     }
 
@@ -168,7 +183,7 @@ public class RecipeService {
                 .build();
     }
 
-    public List<Recipe> getRecipeByIngredient(long ingredientId) {
+    public List<Recipe> getRecipeByIngredientId(Long ingredientId) {
         Optional<IngredientEntity> ingredientOpt = this.ingredientRepository.findById(ingredientId);
         if (ingredientOpt.isEmpty()) {
             log.error("No ingredient found with id " + ingredientId);
@@ -177,5 +192,15 @@ public class RecipeService {
         IngredientEntity ingredientEntity = ingredientOpt.get();
         List<RecipeIngredientEntity> recipeIngredientEntities = this.recipeIngredientRepository.findByIngredient(ingredientEntity);
         return recipeIngredientEntities.stream().map(RecipeIngredientEntity::getRecipe).map(this::toRecipe).toList();
+    }
+
+    public List<Recipe> getRecipeByMonth(Month month) {
+        return this.recipeRepository.findAllBySeason(month).stream().map(this::toRecipe).toList();
+    }
+
+    public List<Recipe> getRecipeByIngredientType(IngredientType type) {
+        List<IngredientEntity> ingredients = this.ingredientRepository.findAllByType(type);
+        List<RecipeEntity> entities = this.recipeIngredientRepository.findAllByIngredientIn(ingredients).stream().map(RecipeIngredientEntity::getRecipe).toList();
+        return entities.stream().map(this::toRecipe).toList();
     }
 }

@@ -3,6 +3,7 @@ package com.optimweb.omenu.database.service;
 import com.optimweb.omenu.database.entity.IngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.model.Ingredient;
+import com.optimweb.omenu.model.Month;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

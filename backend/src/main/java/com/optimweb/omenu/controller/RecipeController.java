@@ -1,6 +1,9 @@
 package com.optimweb.omenu.controller;
 
 import com.optimweb.omenu.database.service.RecipeService;
+import com.optimweb.omenu.exception.NotFoundException;
+import com.optimweb.omenu.model.IngredientType;
+import com.optimweb.omenu.model.Month;
 import com.optimweb.omenu.model.Recipe;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +24,14 @@ public class RecipeController {
         return ResponseEntity.ok().body(this.recipeService.getAllRecipe());
     }
 
-    @GetMapping("/ingredient/{ingredientId}")
-    public ResponseEntity<List<Recipe>> getRecipeWithIngredient(@PathVariable("ingredientId") long ingredientId){
-        return ResponseEntity.ok().body(this.recipeService.getRecipeByIngredient(ingredientId));
+    @GetMapping("/ingredient/{id}")
+    public ResponseEntity<List<Recipe>> getRecipeWithIngredient(@PathVariable("id") Long ingredientId){
+        return ResponseEntity.ok().body(this.recipeService.getRecipeByIngredientId(ingredientId));
+    }
+
+    @GetMapping("/ingredient")
+    public ResponseEntity<List<Recipe>> getRecipeWithIngredient(@RequestParam("type") IngredientType type){
+        return ResponseEntity.ok().body(this.recipeService.getRecipeByIngredientType(type));
     }
 
     @GetMapping("/{id}")
@@ -31,9 +39,18 @@ public class RecipeController {
         return ResponseEntity.ok().body(this.recipeService.getRecipe(id));
     }
 
+    @GetMapping("/season")
+    public ResponseEntity<List<Recipe>> getAllRecipeByMonth(@RequestParam(name = "month") Month month){
+        return ResponseEntity.ok().body(this.recipeService.getRecipeByMonth(month));
+    }
+
     @PostMapping
     public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe){
-        return ResponseEntity.ok().body(this.recipeService.saveRecipe(recipe));
+        try {
+            return ResponseEntity.ok().body(this.recipeService.saveRecipe(recipe));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")

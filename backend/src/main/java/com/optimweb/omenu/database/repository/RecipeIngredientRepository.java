@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredientEntity, Long> {
     List<RecipeIngredientEntity> findByIngredient(IngredientEntity ingredientEntity);
+
+    List<RecipeIngredientEntity> findAllByIngredientIn(List<IngredientEntity> ingredients);
 }
