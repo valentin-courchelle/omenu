@@ -1,11 +1,11 @@
 package com.optimweb.omenu.database.entity;
 
+import com.optimweb.omenu.model.Month;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -37,11 +37,11 @@ public class RecipeEntity {
     @Column(name = "nb_people")
     private int nbPeople;
 
-    @Column(name = "season_start")
-    private Date seasonStart;
-
-    @Column(name = "season_end")
-    private Date seasonEnd;
+    @ElementCollection(targetClass = Month.class)
+    @CollectionTable(name = "recipe_season", joinColumns = @JoinColumn(name = "recipe_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "season")
+    private List<Month> season;
 
     @OneToMany(
             cascade = CascadeType.ALL,

@@ -3,6 +3,7 @@ package com.optimweb.omenu.database.service;
 import com.optimweb.omenu.database.entity.IngredientEntity;
 import com.optimweb.omenu.database.entity.RecipeEntity;
 import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
+import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeRepository;
 import com.optimweb.omenu.model.Recipe;
 import com.optimweb.omenu.model.RecipeIngredient;
@@ -10,10 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +21,12 @@ public class RecipeService {
 
     public static final String NO_RECIPE_FOUND_WITH_ID = "No Recipe found with id ";
 
-    private final RecipeRepository repository;
+    private final RecipeRepository recipeRepository;
+
+    private final IngredientRepository ingredientRepository;
 
     public Recipe getRecipe(long id) {
-        Optional<RecipeEntity> recipeOpt = this.repository.findById(id);
+        Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isPresent()) {
             return this.toRecipe(recipeOpt.get());
         }
@@ -34,35 +35,87 @@ public class RecipeService {
     }
 
     public List<Recipe> getAllRecipe() {
-        return this.repository.findAll().stream().map(this::toRecipe).toList();
+        return this.recipeRepository.findAll().stream().map(this::toRecipe).toList();
     }
 
     public Recipe saveRecipe(Recipe recipe) {
-        return this.toRecipe(this.repository.save(this.toEntity(recipe)));
+        return this.toRecipe(this.recipeRepository.save(this.toEntity(recipe)));
     }
 
     public Recipe updateRecipe(long id, Recipe recipe) {
-        Optional<RecipeEntity> recipeOpt = this.repository.findById(id);
+        Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isEmpty()) {
             log.error(NO_RECIPE_FOUND_WITH_ID + id);
             return null;
         }
-        RecipeEntity updatedRecipe = this.toEntity(recipe);
-        updatedRecipe.setId(id);
-        updatedRecipe = this.repository.save(updatedRecipe);
+
+        RecipeEntity existingRecipe = recipeOpt.get();
+
+        existingRecipe.setName(recipe.getName());
+        existingRecipe.setDescription(recipe.getDescription());
+        existingRecipe.setDuration(recipe.getDuration());
+        existingRecipe.setRating(recipe.getRating());
+        existingRecipe.setNbPeople(recipe.getNbPeople());
+        existingRecipe.setSeason(recipe.getSeason());
+
+        List<RecipeIngredientEntity> updatedIngredients = updateIngredients(existingRecipe, recipe.getIngredients());
+        existingRecipe.setIngredients(updatedIngredients);
+
+        RecipeEntity updatedRecipe = this.recipeRepository.save(existingRecipe);
         log.info("Recipe with id " + recipe.getId() + " successfully updated");
         return this.toRecipe(updatedRecipe);
     }
 
     public void deleteRecipe(long id) {
-        Optional<RecipeEntity> recipeOpt = this.repository.findById(id);
+        Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isEmpty()) {
             log.error(NO_RECIPE_FOUND_WITH_ID + id);
             return;
         }
         RecipeEntity entity = recipeOpt.get();
-        this.repository.delete(entity);
+        this.recipeRepository.delete(entity);
         log.info("Recipe with id " + id + " successfully deleted");
+    }
+
+    /**
+     * Update recipe ingredient list
+     */
+    private List<RecipeIngredientEntity> updateIngredients(RecipeEntity existingRecipe, List<RecipeIngredient> newIngredients) {
+        List<RecipeIngredientEntity> currentIngredients = existingRecipe.getIngredients();
+
+        // Delete former ingredient which are not present anymore
+        currentIngredients.removeIf(currentIngredient -> newIngredients.stream()
+                .noneMatch(newIngredient -> newIngredient.getIngredientId() == currentIngredient.getIngredient().getId()));
+
+        // Add or update new ingredients
+        for (RecipeIngredient newRecipeIngredient : newIngredients) {
+            Optional<RecipeIngredientEntity> existingIngredientOpt = currentIngredients.stream()
+                    .filter(currentIngredient -> currentIngredient.getIngredient().getId() == newRecipeIngredient.getIngredientId())
+                    .findFirst();
+
+            if (existingIngredientOpt.isPresent()) {
+                // Update existing infregient
+                RecipeIngredientEntity existingIngredient = existingIngredientOpt.get();
+                existingIngredient.setQuantity(newRecipeIngredient.getQuantity());
+                existingIngredient.setUnit(newRecipeIngredient.getUnit());
+            } else {
+                // Add new ingredient
+                RecipeIngredientEntity newIngredientEntity = new RecipeIngredientEntity();
+                Optional<IngredientEntity> ingredientOpt = this.ingredientRepository.findById(newRecipeIngredient.getIngredientId());
+                if(ingredientOpt.isPresent()){
+                    newIngredientEntity.setIngredient(ingredientOpt.get());
+                    newIngredientEntity.setQuantity(newRecipeIngredient.getQuantity());
+                    newIngredientEntity.setUnit(newRecipeIngredient.getUnit());
+                    newIngredientEntity.setRecipe(existingRecipe);
+                    currentIngredients.add(newIngredientEntity);
+                } else{
+                    log.error("No ingredient found with id "+newRecipeIngredient.getIngredientId());
+                }
+
+            }
+        }
+
+        return currentIngredients;
     }
 
     private RecipeEntity toEntity(Recipe recipe) {
@@ -72,8 +125,7 @@ public class RecipeService {
         entity.setDuration(recipe.getDuration());
         entity.setNbPeople(recipe.getNbPeople());
         entity.setRating(recipe.getRating());
-        entity.setSeasonStart(recipe.getSeasonStart() != null ? new java.sql.Date(recipe.getSeasonStart().getTime()) : null);
-        entity.setSeasonEnd(recipe.getSeasonEnd() != null ? new java.sql.Date(recipe.getSeasonEnd().getTime()) : null);
+        entity.setSeason(recipe.getSeason());
         entity.setIngredients(recipe.getIngredients().stream().map(i->this.toEntity(i, entity)).toList());
         return entity;
     }
@@ -95,8 +147,7 @@ public class RecipeService {
                 .duration(entity.getDuration())
                 .nbPeople(entity.getNbPeople())
                 .rating(entity.getRating())
-                .seasonStart(entity.getSeasonStart() != null ? new Date(entity.getSeasonStart().getTime()) : null)
-                .seasonEnd(entity.getSeasonEnd() != null ? new Date(entity.getSeasonEnd().getTime()) : null)
+                .season(entity.getSeason())
                 .ingredients(entity.getIngredients().stream().map(this::toIngredient).toList())
                 .build();
     }
