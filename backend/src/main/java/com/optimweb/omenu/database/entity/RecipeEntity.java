@@ -37,7 +37,7 @@ public class RecipeEntity {
     @Column(name = "nb_people")
     private int nbPeople;
 
-    @ElementCollection(targetClass = Month.class)
+    @ElementCollection(targetClass = Month.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "recipe_season", joinColumns = @JoinColumn(name = "recipe_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "season")

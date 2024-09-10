@@ -4,15 +4,19 @@ import com.optimweb.omenu.database.entity.IngredientEntity;
 import com.optimweb.omenu.database.entity.RecipeEntity;
 import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
+import com.optimweb.omenu.database.repository.RecipeIngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeRepository;
 import com.optimweb.omenu.model.Recipe;
 import com.optimweb.omenu.model.RecipeIngredient;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,8 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
 
     private final IngredientRepository ingredientRepository;
+
+    private final RecipeIngredientRepository recipeIngredientRepository;
 
     public Recipe getRecipe(long id) {
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
@@ -102,14 +108,14 @@ public class RecipeService {
                 // Add new ingredient
                 RecipeIngredientEntity newIngredientEntity = new RecipeIngredientEntity();
                 Optional<IngredientEntity> ingredientOpt = this.ingredientRepository.findById(newRecipeIngredient.getIngredientId());
-                if(ingredientOpt.isPresent()){
+                if (ingredientOpt.isPresent()) {
                     newIngredientEntity.setIngredient(ingredientOpt.get());
                     newIngredientEntity.setQuantity(newRecipeIngredient.getQuantity());
                     newIngredientEntity.setUnit(newRecipeIngredient.getUnit());
                     newIngredientEntity.setRecipe(existingRecipe);
                     currentIngredients.add(newIngredientEntity);
-                } else{
-                    log.error("No ingredient found with id "+newRecipeIngredient.getIngredientId());
+                } else {
+                    log.error("No ingredient found with id " + newRecipeIngredient.getIngredientId());
                 }
 
             }
@@ -126,11 +132,11 @@ public class RecipeService {
         entity.setNbPeople(recipe.getNbPeople());
         entity.setRating(recipe.getRating());
         entity.setSeason(recipe.getSeason());
-        entity.setIngredients(recipe.getIngredients().stream().map(i->this.toEntity(i, entity)).toList());
+        entity.setIngredients(recipe.getIngredients().stream().map(i -> this.toEntity(i, entity)).toList());
         return entity;
     }
 
-    private RecipeIngredientEntity toEntity(RecipeIngredient ingredient, RecipeEntity recipeEntity){
+    private RecipeIngredientEntity toEntity(RecipeIngredient ingredient, RecipeEntity recipeEntity) {
         RecipeIngredientEntity entity = new RecipeIngredientEntity();
         entity.setRecipe(recipeEntity);
         entity.setUnit(ingredient.getUnit());
@@ -162,5 +168,14 @@ public class RecipeService {
                 .build();
     }
 
-
+    public List<Recipe> getRecipeByIngredient(long ingredientId) {
+        Optional<IngredientEntity> ingredientOpt = this.ingredientRepository.findById(ingredientId);
+        if (ingredientOpt.isEmpty()) {
+            log.error("No ingredient found with id " + ingredientId);
+            return Collections.emptyList();
+        }
+        IngredientEntity ingredientEntity = ingredientOpt.get();
+        List<RecipeIngredientEntity> recipeIngredientEntities = this.recipeIngredientRepository.findByIngredient(ingredientEntity);
+        return recipeIngredientEntities.stream().map(RecipeIngredientEntity::getRecipe).map(this::toRecipe).toList();
+    }
 }
