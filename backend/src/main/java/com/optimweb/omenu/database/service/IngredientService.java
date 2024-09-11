@@ -2,6 +2,8 @@ package com.optimweb.omenu.database.service;
 
 import com.optimweb.omenu.database.entity.IngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
+import com.optimweb.omenu.exception.BadRequestException;
+import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.Ingredient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,28 +21,42 @@ public class IngredientService {
 
     private final IngredientRepository repository;
 
-    public Ingredient getIngredient(long id) {
+    public Ingredient getIngredient(long id) throws NotFoundException {
         Optional<IngredientEntity> ingredientOpt = this.repository.findById(id);
-        if (ingredientOpt.isPresent()) {
-            return this.toIngredient(ingredientOpt.get());
+        if (ingredientOpt.isEmpty()) {
+            String message = NO_INGREDIENT_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
-        log.error(NO_INGREDIENT_FOUND_WITH_ID + id);
-        return null;
+            return this.toIngredient(ingredientOpt.get());
     }
 
     public List<Ingredient> getAllIngredient() {
         return this.repository.findAll().stream().map(this::toIngredient).toList();
     }
 
-    public Ingredient saveIngredient(Ingredient ingredient) {
+    public Ingredient saveIngredient(Ingredient ingredient) throws BadRequestException {
+        IngredientEntity entity = this.repository.findByNameAndType(ingredient.getName(), ingredient.getType());
+        if(entity != null){
+            String message = "An ingredient with the same name and type already exists";
+            log.error(message);
+            throw new BadRequestException(message);
+        }
         return this.toIngredient(this.repository.save(this.toEntity(ingredient)));
     }
 
-    public Ingredient updateIngredient(long id, Ingredient ingredient) {
+    public Ingredient updateIngredient(long id, Ingredient ingredient) throws NotFoundException, BadRequestException {
+        IngredientEntity sameNameTypeIngrediant = this.repository.findByNameAndType(ingredient.getName(), ingredient.getType());
+        if(sameNameTypeIngrediant != null && sameNameTypeIngrediant.getId() != id){
+            String message = "An ingredient with the same name and type already exists";
+            log.error(message);
+            throw new BadRequestException(message);
+        }
         Optional<IngredientEntity> ingredientOpt = this.repository.findById(id);
         if (ingredientOpt.isEmpty()) {
-            log.error(NO_INGREDIENT_FOUND_WITH_ID + id);
-            return null;
+            String message = NO_INGREDIENT_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
         IngredientEntity updatedIngredient = this.toEntity(ingredient);
         updatedIngredient.setId(id);
@@ -49,11 +65,12 @@ public class IngredientService {
         return this.toIngredient(updatedIngredient);
     }
 
-    public void deleteIngredient(long id) {
+    public void deleteIngredient(long id) throws NotFoundException {
         Optional<IngredientEntity> ingredientOpt = this.repository.findById(id);
         if (ingredientOpt.isEmpty()) {
-            log.error(NO_INGREDIENT_FOUND_WITH_ID + id);
-            return;
+            String message = NO_INGREDIENT_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
         IngredientEntity entity = ingredientOpt.get();
         this.repository.delete(entity);

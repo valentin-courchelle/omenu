@@ -10,4 +10,6 @@ public interface RecipeRepository extends JpaRepository<RecipeEntity, Long> {
 
 
     List<RecipeEntity> findAllBySeason(Month month);
+
+    RecipeEntity findByName(String name);
 }

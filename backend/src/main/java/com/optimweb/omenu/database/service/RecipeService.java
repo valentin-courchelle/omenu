@@ -6,6 +6,7 @@ import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeIngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeRepository;
+import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.IngredientType;
 import com.optimweb.omenu.model.Month;
@@ -33,28 +34,43 @@ public class RecipeService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
 
-    public Recipe getRecipe(long id) {
+    public Recipe getRecipe(long id) throws NotFoundException {
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
-        if (recipeOpt.isPresent()) {
-            return this.toRecipe(recipeOpt.get());
+        if (recipeOpt.isEmpty()) {
+            String message = NO_RECIPE_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
-        log.error(NO_RECIPE_FOUND_WITH_ID + id);
-        return null;
+        return this.toRecipe(recipeOpt.get());
     }
 
     public List<Recipe> getAllRecipe() {
         return this.recipeRepository.findAll().stream().map(this::toRecipe).toList();
     }
 
-    public Recipe saveRecipe(Recipe recipe) throws NotFoundException {
+    public Recipe saveRecipe(Recipe recipe) throws NotFoundException, BadRequestException {
+        RecipeEntity entity = this.recipeRepository.findByName(recipe.getName());
+        if (entity != null) {
+            String message = "A recipe with this name " + recipe.getName() + " already exists";
+            log.error(message);
+            throw new BadRequestException(message);
+        }
         return this.toRecipe(this.recipeRepository.save(this.toEntity(recipe)));
     }
 
-    public Recipe updateRecipe(long id, Recipe recipe) {
+    public Recipe updateRecipe(long id, Recipe recipe) throws BadRequestException, NotFoundException {
+        RecipeEntity sameNameRecipe = this.recipeRepository.findByName(recipe.getName());
+        if (sameNameRecipe != null && id != recipe.getId()) {
+            String message = "An other recipe with name " + recipe.getName() + " already exists";
+            log.error(message);
+            throw new BadRequestException(message);
+        }
+
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isEmpty()) {
-            log.error(NO_RECIPE_FOUND_WITH_ID + id);
-            return null;
+            String message = NO_RECIPE_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
 
         RecipeEntity existingRecipe = recipeOpt.get();
@@ -74,11 +90,12 @@ public class RecipeService {
         return this.toRecipe(updatedRecipe);
     }
 
-    public void deleteRecipe(long id) {
+    public void deleteRecipe(long id) throws NotFoundException {
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isEmpty()) {
-            log.error(NO_RECIPE_FOUND_WITH_ID + id);
-            return;
+            String message = NO_RECIPE_FOUND_WITH_ID + id;
+            log.error(message);
+            throw new NotFoundException(message);
         }
         RecipeEntity entity = recipeOpt.get();
         this.recipeRepository.delete(entity);
@@ -135,7 +152,7 @@ public class RecipeService {
         entity.setRating(recipe.getRating());
         entity.setSeason(recipe.getSeason());
         List<RecipeIngredientEntity> recipeIngredientEntities = new ArrayList<>();
-        for(RecipeIngredient recipeIngredient : recipe.getIngredients()){
+        for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
             recipeIngredientEntities.add(this.toEntity(recipeIngredient, entity));
         }
         entity.setIngredients(recipeIngredientEntities);
