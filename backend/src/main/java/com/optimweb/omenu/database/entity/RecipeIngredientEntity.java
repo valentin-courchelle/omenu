@@ -14,12 +14,11 @@ import lombok.NoArgsConstructor;
 public class RecipeIngredientEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_ing_seq")
-    @SequenceGenerator(name = "recipe_ing_seq", sequenceName = "recipe_ing_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn( name="ingredient_id" )
+    @ManyToOne
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private IngredientEntity ingredient;
 
     private float quantity;
@@ -27,7 +26,7 @@ public class RecipeIngredientEntity {
     @Enumerated(EnumType.STRING)
     private Unit unit;
 
-    @ManyToOne( cascade = CascadeType.ALL)
-    @JoinColumn(name = "recipe_id")
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
     private RecipeEntity recipe;
 }

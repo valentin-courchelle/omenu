@@ -16,10 +16,10 @@ import java.util.List;
 public class RecipeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_seq")
-    @SequenceGenerator(name = "recipe_seq", sequenceName = "recipe_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -40,13 +40,9 @@ public class RecipeEntity {
     @ElementCollection(targetClass = Month.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "recipe_season", joinColumns = @JoinColumn(name = "recipe_id"))
     @Enumerated(EnumType.STRING)
-    @Column(name = "season")
     private List<Month> season;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            mappedBy = "recipe",
-            fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredientEntity> ingredients;
 
 
