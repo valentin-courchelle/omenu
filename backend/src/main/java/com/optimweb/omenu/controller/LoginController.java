@@ -1,18 +1,21 @@
 package com.optimweb.omenu.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.optimweb.omenu.security.JWTService;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
 
-    @GetMapping("/user")
-    public String getUser(){
-        return "Welcome User";
+    private final JWTService jwtService;
+
+    public LoginController(JWTService jwtService) {
+        this.jwtService = jwtService;
     }
 
-    @GetMapping("/admin")
-    public String getAdmin(){
-        return "Welcome Admin";
+    @PostMapping("/login")
+    public String getToken(Authentication authentication) {
+        return jwtService.generateToken(authentication);
     }
 }
