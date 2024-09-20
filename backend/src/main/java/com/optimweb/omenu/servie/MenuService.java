@@ -19,6 +19,9 @@ public class MenuService {
     public record MealGeneratorRecord(int nbMeal, List<Month> months) {
     }
 
+    public record RecipeIngredientKeys(long ingredientId, Unit unit) {
+    }
+
 
     public Menu generateMenu(Map<Date, List<MealTime>> mealTimeByDate) {
         // Be sure that every date represents a distinct day + gather distinct meal time to related day
@@ -27,6 +30,25 @@ public class MenuService {
         MealGeneratorRecord mealsGeneratorParams = this.computeGeneratorParams(cleanedMealTimeByDate);
         List<Recipe> recipes = this.generateMeals(mealsGeneratorParams);
         return this.createMenu(recipes, cleanedMealTimeByDate);
+    }
+
+    public List<RecipeIngredient> generateIngredientList(Menu menu) {
+        Map<RecipeIngredientKeys, RecipeIngredient> ingredientsByKeys = new HashMap<>();
+        for (List<Meal> meals : menu.getMeals().values()) {
+            for (Meal meal : meals) {
+                List<RecipeIngredient> recipeIngredients = meal.getRecipe().getIngredients();
+                for (RecipeIngredient recipeIngredient : recipeIngredients) {
+                    RecipeIngredientKeys keys = new RecipeIngredientKeys(recipeIngredient.getIngredientId(), recipeIngredient.getUnit());
+                    if (ingredientsByKeys.containsKey(keys)) {
+                        RecipeIngredient previousRecipeIngredient = ingredientsByKeys.get(keys);
+                        previousRecipeIngredient.setQuantity(previousRecipeIngredient.getQuantity() + recipeIngredient.getQuantity());
+                    } else {
+                        ingredientsByKeys.put(keys, recipeIngredient);
+                    }
+                }
+            }
+        }
+        return ingredientsByKeys.values().stream().toList();
     }
 
     private Menu createMenu(List<Recipe> recipes, Map<LocalDate, Set<MealTime>> mealTimeByDate) {
