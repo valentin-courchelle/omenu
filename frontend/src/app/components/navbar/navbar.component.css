@@ -1,0 +1,27 @@
+.app-navbar {
+    background-color: #f4f4f4;
+    padding: 10px;
+  }
+  
+  .app-navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .app-navbar ul li {
+    margin: 0 15px;
+  }
+  
+  .app-navbar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .app-navbar ul li a:hover {
+    color: #ff6347;
+  }
+  

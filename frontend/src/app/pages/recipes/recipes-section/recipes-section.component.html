@@ -1,0 +1,14 @@
+<div class="recipes-section">
+    <h2>Recettes</h2>
+    <input
+      type="text"
+      placeholder="Rechercher une recette"
+      [(ngModel)]="searchTerm"
+      (input)="searchRecipes()"
+    />
+    <button (click)="addRecipe()">Ajouter une recette</button>
+    <ul>
+      <li *ngFor="let recipe of filteredRecipes">{{ recipe.name }}</li>
+    </ul>
+  </div>
+  

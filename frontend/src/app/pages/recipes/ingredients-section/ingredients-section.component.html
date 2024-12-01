@@ -1,0 +1,14 @@
+<div class="ingredients-section">
+    <h2>Ingrédients</h2>
+    <input
+      type="text"
+      placeholder="Rechercher un ingrédient"
+      [(ngModel)]="searchTerm"
+      (input)="searchIngredients()"
+    />
+    <button (click)="addIngredient()">Ajouter un ingrédient</button>
+    <ul>
+      <li *ngFor="let ingredient of filteredIngredients">{{ ingredient.name }}</li>
+    </ul>
+  </div>
+  

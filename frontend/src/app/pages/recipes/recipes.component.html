@@ -1,0 +1,8 @@
+<div class="recipes-page">
+    <h2>Recettes</h2>
+    <button (click)="addRecipe()">Ajouter une recette</button>
+    <ul>
+      <li *ngFor="let recipe of recipes">{{ recipe.name }}</li>
+    </ul>
+</div>
+  
