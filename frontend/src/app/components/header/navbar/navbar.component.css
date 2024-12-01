@@ -1,0 +1,37 @@
+.app-navbar {
+    padding: 10px;
+  }
+  
+  .app-navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .app-navbar ul li {
+    margin: 0 15px;
+  }
+  
+  .app-navbar ul li a {
+    position: relative; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .app-navbar ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%; 
+    width: 0; 
+    height: 2px; 
+    background-color: white;
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+  
+  .app-navbar ul li a:hover::after {
+    left: 0; 
+    width: 100%;
+  }

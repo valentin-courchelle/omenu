@@ -1,14 +1,24 @@
 <div class="recipes-section">
-    <h2>Recettes</h2>
-    <input
-      type="text"
-      placeholder="Rechercher une recette"
-      [(ngModel)]="searchTerm"
-      (input)="searchRecipes()"
-    />
-    <button (click)="addRecipe()">Ajouter une recette</button>
-    <ul>
-      <li *ngFor="let recipe of filteredRecipes">{{ recipe.name }}</li>
-    </ul>
+  <!-- Barre supérieure -->
+  <div class="top-bar">
+    <!-- Barre de recherche -->
+    <div class="search-bar">
+      <i class="fa fa-search"></i> <!-- Icône de loupe -->
+      <input
+        type="text"
+        placeholder="Rechercher une recette"
+        [(ngModel)]="searchTerm"
+        (input)="searchRecipes()"
+      />
+    </div>
+    <!-- Bouton Ajouter -->
+    <button class="add-button" (click)="addRecipe()">
+      <i class="fa fa-plus"></i> Ajouter
+    </button>
   </div>
-  
+
+  <!-- Liste des recettes -->
+  <ul>
+    <li *ngFor="let recipe of filteredRecipes">{{ recipe.name }}</li>
+  </ul>
+</div>

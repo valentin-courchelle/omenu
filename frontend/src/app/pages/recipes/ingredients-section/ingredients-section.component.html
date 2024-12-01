@@ -1,14 +1,48 @@
 <div class="ingredients-section">
-    <h2>Ingrédients</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th (click)="sortBy('name')">
+            Nom
+            <span [class]="getSortClass('name')"></span>
+          </th>
+          <th (click)="sortBy('type')">
+            Type
+            <span [class]="getSortClass('type')"></span>
+          </th>
+          <th (click)="sortBy('recipeCount')">
+            Nombre recettes
+            <span [class]="getSortClass('recipeCount')"></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ingredient of sortedIngredients">
+          <td>{{ ingredient.name }}</td>
+          <td>
+            <span class="type-pill" [ngClass]="ingredient.type">{{ ingredient.type }}</span>
+          </td>
+          <td>{{ ingredient.recipeCount }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Formulaire d'ajout -->
+  <div class="add-ingredient-form">
     <input
       type="text"
-      placeholder="Rechercher un ingrédient"
-      [(ngModel)]="searchTerm"
-      (input)="searchIngredients()"
+      placeholder="Nom de l'ingrédient"
+      [(ngModel)]="newIngredient.name"
     />
-    <button (click)="addIngredient()">Ajouter un ingrédient</button>
-    <ul>
-      <li *ngFor="let ingredient of filteredIngredients">{{ ingredient.name }}</li>
-    </ul>
+    <select [(ngModel)]="newIngredient.type">
+      <option *ngFor="let type of ingredientTypes" [value]="type">
+        {{ type }}
+      </option>
+    </select>
+    <button class="add-button" (click)="addIngredient()">
+      <i class="fa fa-plus"></i> Ajouter
+    </button>
   </div>
-  
+</div>

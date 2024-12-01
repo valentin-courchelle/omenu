@@ -1,0 +1,118 @@
+/* Section globale */
+.ingredients-section {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Conteneur pour le tableau */
+.table-container {
+    max-height: 300px; /* Hauteur fixe avec scrollbar */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #f4f4f4;
+}
+
+th, td {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+th {
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+}
+
+/* Flèche vers le bas (asc) */
+.sort-asc::after {
+    content: '▼'; 
+}
+
+/* Flèche vers le haut (desc) */
+.sort-desc::after {
+    content: '▲'; 
+}
+
+/* Pastilles de type */
+.type-pill {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.type-pill.Légume {
+    background-color: green;
+}
+
+.type-pill.Viande {
+    background-color: red;
+}
+
+.type-pill.Poisson {
+    background-color: blue;
+}
+
+.type-pill.Produit-laitier {
+    background-color: #f5deb3; /* Blanc cassé */
+    color: #333;
+}
+
+/* Formulaire d'ajout */
+.add-ingredient-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-ingredient-form input {
+    flex: 2;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-ingredient-form select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-button {
+    flex: 0;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-button i {
+    font-size: 16px;
+}
+
+.add-button:hover {
+    background-color: #e5533d;
+}
+  
