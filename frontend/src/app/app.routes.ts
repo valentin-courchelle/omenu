@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { RecipesComponent } from './pages/recipes/recipes.component'; // La page Recipes avec sidebar
+import { RecipesComponent } from './pages/recipes/recipes.component'; 
 import { RecipesSectionComponent } from './pages/recipes/recipes-section/recipes-section.component';
 import { IngredientsSectionComponent } from './pages/recipes/ingredients-section/ingredients-section.component';
 

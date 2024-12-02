@@ -6,7 +6,7 @@
 
 /* Conteneur pour le tableau */
 .table-container {
-    max-height: 300px; /* Hauteur fixe avec scrollbar */
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -19,7 +19,10 @@ table {
 }
 
 thead {
+    position: sticky;
     background-color: #f4f4f4;
+    top: 0;
+    z-index: 1;
 }
 
 th, td {

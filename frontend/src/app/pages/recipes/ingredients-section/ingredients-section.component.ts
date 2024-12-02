@@ -17,7 +17,16 @@ export class IngredientsSectionComponent {
     { name: 'Carotte', type: 'Légume', recipeCount: 5 },
     { name: 'Poulet', type: 'Viande', recipeCount: 10 },
     { name: 'Saumon', type: 'Poisson', recipeCount: 3 },
-    { name: 'Fromage', type: 'Produit-laitier', recipeCount: 8 },
+    { name: 'Emmental', type: 'Produit-laitier', recipeCount: 8 },
+    { name: 'Camembert', type: 'Produit-laitier', recipeCount: 1 },
+    { name: 'Courgettes', type: 'Légume', recipeCount: 2 },
+    { name: 'Tomates', type: 'Légume', recipeCount: 5 },
+    { name: 'Saumon', type: 'Poisson', recipeCount: 3 },
+    { name: 'Navet', type: 'Légume', recipeCount: 9 },
+    { name: 'Porc', type: 'Viande', recipeCount: 7 },
+    { name: 'Colin', type: 'Poisson', recipeCount: 2 },
+    { name: 'Brocoli', type: 'Légume', recipeCount: 1 },
+    { name: 'Crème fraiche', type: 'Produit-laitier', recipeCount: 8 }
   ];
 
   ingredientTypes = ['Légume', 'Viande', 'Poisson', 'Produit-laitier'];

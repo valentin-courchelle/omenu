@@ -1,12 +1,11 @@
 .recipes-layout {
     display: flex;
-    height: 100vh; 
+    height: calc(100vh - 170px); 
   }
   
   .recipes-content {
     flex: 1; 
     margin-left: 230px;
     padding: 20px;
-    overflow-y: auto;
   }
   
