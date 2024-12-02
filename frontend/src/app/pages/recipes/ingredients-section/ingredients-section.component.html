@@ -18,12 +18,23 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let ingredient of sortedIngredients">
-          <td>{{ ingredient.name }}</td>
+        <tr *ngFor="let ingredient of sortedIngredients; let i = index"
+        (mouseover)="hoveredRow = i"
+        (mouseleave)="hoveredRow = -1"
+        >
           <td>
-            <span class="type-pill" [ngClass]="ingredient.type">{{ ingredient.type }}</span>
+            <span *ngIf="editedIngredientId !== ingredient.id || editedField !== 'name'" (click)="editRow(ingredient.id, 'name')">{{ ingredient.name }}</span>
+            <input *ngIf="editedIngredientId === ingredient.id && editedField === 'name'" [(ngModel)]="ingredient.name" (blur)="saveEdit()"/>
           </td>
-          <td>{{ ingredient.recipeCount }}</td>
+          <td>
+            <span *ngIf="editedIngredientId !== ingredient.id || editedField != 'type'" (click)="editRow(ingredient.id, 'type')" class="type-pill" [ngClass]="ingredient.type">{{ ingredient.type }}</span>
+            <select *ngIf="editedIngredientId === ingredient.id && editedField === 'type'" [(ngModel)]="ingredient.type" (blur)="saveEdit()">            
+            <option *ngFor="let type of ingredientTypes" [value]="type">{{ type }}</option>
+            </select>
+          </td>
+          <td>{{ ingredient.recipeCount }}
+            <i class="fa fa-trash delete-icon" *ngIf="hoveredRow === i" (click)="deleteIngredient(ingredient.id)"></i>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -44,5 +55,17 @@
     <button class="add-button" (click)="addIngredient()">
       <i class="fa fa-plus"></i> Ajouter
     </button>
+  </div>
+
+   <!-- Popup de confirmation -->
+   <div class="popup" *ngIf="showPopup">
+    <div class="popup-content">
+      <p>
+        L'ingrédient <strong>{{ ingredientToDelete?.name }}</strong> est utilisé dans
+        {{ ingredientToDelete?.recipeCount }} recettes. Voulez-vous vraiment le supprimer ?
+      </p>
+      <button (click)="confirmDelete()">Confirmer</button>
+      <button (click)="cancelDelete()">Annuler</button>
+    </div>
   </div>
 </div>

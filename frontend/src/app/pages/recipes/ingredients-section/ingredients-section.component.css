@@ -31,6 +31,10 @@ th, td {
     border-bottom: 1px solid #ccc;
 }
 
+td{
+    position: relative;
+}
+
 th {
     font-weight: bold;
     cursor: pointer;
@@ -118,4 +122,72 @@ th {
 .add-button:hover {
     background-color: #e5533d;
 }
+
+/* Icône poubelle */
+.delete-icon {
+    color: red;
+    cursor: pointer;
+    visibility: hidden; /* Cachée par défaut */
+    position: absolute; /* Position relative à la cellule */
+    right: 10px; /* Décalée vers la droite de la cellule */
+    top: 50%; /* Alignée verticalement */
+    transform: translateY(-50%);
+    font-size: 14px; /* Taille de l'icône */
+    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    opacity: 0;
+  }
+  
+  tr:hover .delete-icon {
+    visibility: visible; /* Visible au survol */
+    opacity: 1; /* Apparition */
+  }
+  
+  /* Transition visuelle au survol */
+  tr {
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  tr:hover {
+    background-color: #f9f9f9; /* Légère surbrillance au survol */
+  }
+  
+  /* Popup de confirmation */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .popup-content {
+    text-align: center;
+  }
+  
+  .popup-content p {
+    margin-bottom: 20px;
+  }
+  
+  .popup-content button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .popup-content button:first-child {
+    background-color: #ff6347;
+    color: white;
+  }
+  
+  .popup-content button:last-child {
+    background-color: #ccc;
+  }
   
