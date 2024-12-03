@@ -3,7 +3,7 @@ package com.optimweb.omenu.controller;
 import com.optimweb.omenu.controller.model.MenuCreationRequest;
 import com.optimweb.omenu.model.Menu;
 import com.optimweb.omenu.model.RecipeIngredient;
-import com.optimweb.omenu.servie.MenuService;
+import com.optimweb.omenu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

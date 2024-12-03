@@ -1,6 +1,6 @@
-package com.optimweb.omenu.servie;
+package com.optimweb.omenu.service;
 
-import com.optimweb.omenu.database.service.RecipeService;
+import com.optimweb.omenu.database.service.RecipeRepositoryService;
 import com.optimweb.omenu.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MenuService {
 
-    private RecipeService recipeService;
+    private RecipeRepositoryService recipeRepositoryService;
 
     public record MealGeneratorRecord(int nbMeal, List<Month> months) {
     }
@@ -87,7 +87,7 @@ public class MenuService {
     private List<Recipe> generateMeals(MealGeneratorRecord params) {
         Set<Recipe> recipeForMonths = new HashSet<>();
         for (Month month : params.months()) {
-            recipeForMonths.addAll(this.recipeService.getRecipeByMonth(month));
+            recipeForMonths.addAll(this.recipeRepositoryService.getRecipeByMonth(month));
         }
         if (recipeForMonths.size() < params.nbMeal()) {
             return new ArrayList<>(recipeForMonths);

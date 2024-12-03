@@ -1,9 +1,9 @@
 package com.optimweb.omenu.controller;
 
-import com.optimweb.omenu.database.service.IngredientService;
+import com.optimweb.omenu.controller.service.IngredientService;
+import com.optimweb.omenu.dto.IngredientDto;
 import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
-import com.optimweb.omenu.model.Ingredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,12 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @GetMapping
-    public ResponseEntity<List<Ingredient>> getAllIngredient() {
+    public ResponseEntity<List<IngredientDto>> getAllIngredient() {
         return ResponseEntity.ok().body(this.ingredientService.getAllIngredient());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingredient> getIngredient(@PathVariable long id) {
+    public ResponseEntity<IngredientDto> getIngredient(@PathVariable long id) {
         try {
             return ResponseEntity.ok().body(this.ingredientService.getIngredient(id));
         } catch (NotFoundException e) {
@@ -33,16 +33,16 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
+    public ResponseEntity<IngredientDto> createIngredient(@RequestBody IngredientDto ingredient) {
         try {
-            return ResponseEntity.ok().body(this.ingredientService.saveIngredient(ingredient));
+            return ResponseEntity.ok().body(this.ingredientService.createIngredient(ingredient));
         } catch (BadRequestException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable long id, @RequestBody Ingredient ingredient) {
+    public ResponseEntity<IngredientDto> updateIngredient(@PathVariable long id, @RequestBody IngredientDto ingredient) {
         try {
             return ResponseEntity.ok().body(this.ingredientService.updateIngredient(id, ingredient));
         } catch (NotFoundException e) {

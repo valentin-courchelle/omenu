@@ -1,6 +1,7 @@
 package com.optimweb.omenu.controller;
 
-import com.optimweb.omenu.database.service.RecipeService;
+import com.optimweb.omenu.controller.service.RecipeService;
+import com.optimweb.omenu.dto.RecipeDto;
 import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.IngredientType;
@@ -21,22 +22,22 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping
-    public ResponseEntity<List<Recipe>> getAllRecipe() {
+    public ResponseEntity<List<RecipeDto>> getAllRecipe() {
         return ResponseEntity.ok().body(this.recipeService.getAllRecipe());
     }
 
     @GetMapping("/ingredient/{id}")
-    public ResponseEntity<List<Recipe>> getRecipeWithIngredient(@PathVariable("id") Long ingredientId) {
+    public ResponseEntity<List<RecipeDto>> getRecipeWithIngredient(@PathVariable("id") Long ingredientId) {
         return ResponseEntity.ok().body(this.recipeService.getRecipeByIngredientId(ingredientId));
     }
 
     @GetMapping("/ingredient")
-    public ResponseEntity<List<Recipe>> getRecipeWithIngredientType(@RequestParam("type") IngredientType type) {
+    public ResponseEntity<List<RecipeDto>> getRecipeWithIngredientType(@RequestParam("type") IngredientType type) {
         return ResponseEntity.ok().body(this.recipeService.getRecipeByIngredientType(type));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable long id) {
+    public ResponseEntity<RecipeDto> getRecipe(@PathVariable long id) {
         try {
             return ResponseEntity.ok().body(this.recipeService.getRecipe(id));
         } catch (NotFoundException e) {
@@ -45,14 +46,14 @@ public class RecipeController {
     }
 
     @GetMapping("/season")
-    public ResponseEntity<List<Recipe>> getAllRecipeByMonth(@RequestParam(name = "month") Month month) {
+    public ResponseEntity<List<RecipeDto>> getAllRecipeByMonth(@RequestParam(name = "month") Month month) {
         return ResponseEntity.ok().body(this.recipeService.getRecipeByMonth(month));
     }
 
     @PostMapping
-    public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipe) {
         try {
-            return ResponseEntity.ok().body(this.recipeService.saveRecipe(recipe));
+            return ResponseEntity.ok().body(this.recipeService.createRecipe(recipe));
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (BadRequestException e) {
@@ -61,7 +62,7 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Recipe> updateRecipe(@PathVariable long id, @RequestBody Recipe recipe) {
+    public ResponseEntity<RecipeDto> updateRecipe(@PathVariable long id, @RequestBody RecipeDto recipe) {
         try {
             return ResponseEntity.ok().body(this.recipeService.updateRecipe(id, recipe));
         } catch (BadRequestException e) {

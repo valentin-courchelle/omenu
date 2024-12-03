@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -15,4 +17,6 @@ public class Ingredient {
     private String name;
 
     private IngredientType type;
+
+    private List<RecipeIngredient> recipeIngredients;
 }

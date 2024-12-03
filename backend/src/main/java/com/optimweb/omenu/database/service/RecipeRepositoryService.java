@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class RecipeService {
+public class RecipeRepositoryService {
 
     public static final String NO_RECIPE_FOUND_WITH_ID = "No Recipe found with id ";
 
@@ -36,38 +36,20 @@ public class RecipeService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
 
-    public Recipe getRecipe(long id) throws NotFoundException {
+    public Recipe getRecipe(long id) {
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
-        if (recipeOpt.isEmpty()) {
-            String message = NO_RECIPE_FOUND_WITH_ID + id;
-            log.error(message);
-            throw new NotFoundException(message);
-        }
-        return this.toRecipe(recipeOpt.get());
+        return recipeOpt.map(this::toRecipe).orElse(null);
     }
 
     public List<Recipe> getAllRecipe() {
         return this.recipeRepository.findAll().stream().map(this::toRecipe).toList();
     }
 
-    public Recipe saveRecipe(Recipe recipe) throws NotFoundException, BadRequestException {
-        RecipeEntity entity = this.recipeRepository.findByName(recipe.getName());
-        if (entity != null) {
-            String message = "A recipe with this name " + recipe.getName() + " already exists";
-            log.error(message);
-            throw new BadRequestException(message);
-        }
+    public Recipe saveRecipe(Recipe recipe) throws NotFoundException {
         return this.toRecipe(this.recipeRepository.save(this.toEntity(recipe)));
     }
 
-    public Recipe updateRecipe(long id, Recipe recipe) throws BadRequestException, NotFoundException {
-        RecipeEntity sameNameRecipe = this.recipeRepository.findByName(recipe.getName());
-        if (sameNameRecipe != null && id != recipe.getId()) {
-            String message = "An other recipe with name " + recipe.getName() + " already exists";
-            log.error(message);
-            throw new BadRequestException(message);
-        }
-
+    public Recipe updateRecipe(long id, Recipe recipe) throws NotFoundException {
         Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
         if (recipeOpt.isEmpty()) {
             String message = NO_RECIPE_FOUND_WITH_ID + id;
@@ -92,16 +74,8 @@ public class RecipeService {
         return this.toRecipe(updatedRecipe);
     }
 
-    public void deleteRecipe(long id) throws NotFoundException {
-        Optional<RecipeEntity> recipeOpt = this.recipeRepository.findById(id);
-        if (recipeOpt.isEmpty()) {
-            String message = NO_RECIPE_FOUND_WITH_ID + id;
-            log.error(message);
-            throw new NotFoundException(message);
-        }
-        RecipeEntity entity = recipeOpt.get();
-        this.recipeRepository.delete(entity);
-        log.info("Recipe with id " + id + " successfully deleted");
+    public void deleteRecipe(long id) {
+        this.recipeRepository.deleteById(id);
     }
 
     /**
@@ -221,5 +195,9 @@ public class RecipeService {
         List<IngredientEntity> ingredients = this.ingredientRepository.findAllByType(type);
         List<RecipeEntity> entities = this.recipeIngredientRepository.findAllByIngredientIn(ingredients).stream().map(RecipeIngredientEntity::getRecipe).toList();
         return entities.stream().map(this::toRecipe).toList();
+    }
+
+    public boolean doesRecipeExist(String name) {
+        return this.recipeRepository.findByName(name) != null;
     }
 }
