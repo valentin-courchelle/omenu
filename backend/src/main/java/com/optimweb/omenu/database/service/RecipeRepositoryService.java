@@ -6,7 +6,6 @@ import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeIngredientRepository;
 import com.optimweb.omenu.database.repository.RecipeRepository;
-import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.IngredientType;
 import com.optimweb.omenu.model.Month;

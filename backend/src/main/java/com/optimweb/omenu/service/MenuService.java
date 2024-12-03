@@ -1,7 +1,11 @@
 package com.optimweb.omenu.service;
 
 import com.optimweb.omenu.database.service.RecipeRepositoryService;
+import com.optimweb.omenu.dto.MealDto;
+import com.optimweb.omenu.dto.MenuDto;
+import com.optimweb.omenu.dto.RecipeIngredientDto;
 import com.optimweb.omenu.model.*;
+import com.optimweb.omenu.service.mapper.MenuMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MenuService {
 
-    private RecipeRepositoryService recipeRepositoryService;
+    private final RecipeRepositoryService recipeRepositoryService;
 
     public record MealGeneratorRecord(int nbMeal, List<Month> months) {
     }
@@ -23,7 +27,7 @@ public class MenuService {
     }
 
 
-    public Menu generateMenu(Map<Date, List<MealTime>> mealTimeByDate) {
+    public MenuDto generateMenu(Map<Date, List<MealTime>> mealTimeByDate) {
         // Be sure that every date represents a distinct day + gather distinct meal time to related day
         Map<LocalDate, Set<MealTime>> cleanedMealTimeByDate = cleanMealTimesByDate(mealTimeByDate);
 
@@ -32,15 +36,15 @@ public class MenuService {
         return this.createMenu(recipes, cleanedMealTimeByDate);
     }
 
-    public List<RecipeIngredient> generateIngredientList(Menu menu) {
-        Map<RecipeIngredientKeys, RecipeIngredient> ingredientsByKeys = new HashMap<>();
-        for (List<Meal> meals : menu.getMeals().values()) {
-            for (Meal meal : meals) {
-                List<RecipeIngredient> recipeIngredients = meal.getRecipe().getIngredients();
-                for (RecipeIngredient recipeIngredient : recipeIngredients) {
+    public List<RecipeIngredientDto> generateIngredientList(MenuDto menu) {
+        Map<RecipeIngredientKeys, RecipeIngredientDto> ingredientsByKeys = new HashMap<>();
+        for (List<MealDto> meals : menu.getMeals().values()) {
+            for (MealDto meal : meals) {
+                List<RecipeIngredientDto> recipeIngredients = meal.getRecipe().getIngredients();
+                for (RecipeIngredientDto recipeIngredient : recipeIngredients) {
                     RecipeIngredientKeys keys = new RecipeIngredientKeys(recipeIngredient.getIngredientId(), recipeIngredient.getUnit());
                     if (ingredientsByKeys.containsKey(keys)) {
-                        RecipeIngredient previousRecipeIngredient = ingredientsByKeys.get(keys);
+                        RecipeIngredientDto previousRecipeIngredient = ingredientsByKeys.get(keys);
                         previousRecipeIngredient.setQuantity(previousRecipeIngredient.getQuantity() + recipeIngredient.getQuantity());
                     } else {
                         ingredientsByKeys.put(keys, recipeIngredient);
@@ -51,7 +55,7 @@ public class MenuService {
         return ingredientsByKeys.values().stream().toList();
     }
 
-    private Menu createMenu(List<Recipe> recipes, Map<LocalDate, Set<MealTime>> mealTimeByDate) {
+    private MenuDto createMenu(List<Recipe> recipes, Map<LocalDate, Set<MealTime>> mealTimeByDate) {
         Map<Date, List<Meal>> mealsByDate = new HashMap<>();
         int index = 0;
         for (Map.Entry<LocalDate, Set<MealTime>> entry : mealTimeByDate.entrySet()) {
@@ -74,7 +78,7 @@ public class MenuService {
                 }
             }
         }
-        return new Menu(mealsByDate);
+        return MenuMapper.toDto(new Menu(mealsByDate));
     }
 
     private Meal toMeal(Recipe recipe, MealTime time) {

@@ -1,8 +1,8 @@
 package com.optimweb.omenu.controller;
 
 import com.optimweb.omenu.controller.model.MenuCreationRequest;
-import com.optimweb.omenu.model.Menu;
-import com.optimweb.omenu.model.RecipeIngredient;
+import com.optimweb.omenu.dto.MenuDto;
+import com.optimweb.omenu.dto.RecipeIngredientDto;
 import com.optimweb.omenu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +21,13 @@ public class MenuController {
     private final MenuService menuService;
 
     @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuCreationRequest request){
-        Menu menu = this.menuService.generateMenu(request.getMealTimeByDate());
+    public ResponseEntity<MenuDto> createMenu(@RequestBody MenuCreationRequest request){
+        MenuDto menu = this.menuService.generateMenu(request.getMealTimeByDate());
         return ResponseEntity.ok().body(menu);
     }
 
     @PostMapping("/ingredients")
-    public ResponseEntity<List<RecipeIngredient>> createIngredientList(@RequestBody Menu menu){
+    public ResponseEntity<List<RecipeIngredientDto>> createIngredientList(@RequestBody MenuDto menu){
         return ResponseEntity.ok().body(this.menuService.generateIngredientList(menu));
     }
 }

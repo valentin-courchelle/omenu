@@ -7,7 +7,6 @@ import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.IngredientType;
 import com.optimweb.omenu.model.Month;
 import com.optimweb.omenu.model.Recipe;
-import com.optimweb.omenu.service.mapper.RecipeIngredientMapper;
 import com.optimweb.omenu.service.mapper.RecipeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

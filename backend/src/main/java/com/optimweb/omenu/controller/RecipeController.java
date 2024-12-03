@@ -6,7 +6,6 @@ import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.IngredientType;
 import com.optimweb.omenu.model.Month;
-import com.optimweb.omenu.model.Recipe;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
