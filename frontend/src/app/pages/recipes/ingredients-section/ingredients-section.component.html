@@ -27,7 +27,7 @@
             <input *ngIf="editedIngredientId === ingredient.id && editedField === 'name'" [(ngModel)]="ingredient.name" (blur)="saveEdit()"/>
           </td>
           <td>
-            <span *ngIf="editedIngredientId !== ingredient.id || editedField != 'type'" (click)="editRow(ingredient.id, 'type')" class="type-pill" [ngClass]="ingredient.type">{{ ingredient.type }}</span>
+            <span *ngIf="editedIngredientId !== ingredient.id || editedField != 'type'" (click)="editRow(ingredient.id, 'type')" class="type-pill" [ngStyle]="{ 'background-color': getBackgroundColor(ingredient.type) }" [ngClass]="ingredient.type">{{ getTranslation(ingredient.type) }}</span>
             <select *ngIf="editedIngredientId === ingredient.id && editedField === 'type'" [(ngModel)]="ingredient.type" (blur)="saveEdit()">            
             <option *ngFor="let type of ingredientTypes" [value]="type">{{ type }}</option>
             </select>
@@ -49,7 +49,7 @@
     />
     <select [(ngModel)]="newIngredient.type">
       <option *ngFor="let type of ingredientTypes" [value]="type">
-        {{ type }}
+        {{ getTranslation(type) }}
       </option>
     </select>
     <button class="add-button" (click)="addIngredient()">

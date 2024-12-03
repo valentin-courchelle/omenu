@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { max } from 'rxjs';
 
-// Type pour les colonnes triables
+import { typeColors } from './type-color';
+import { typeTranslations } from './type-translations';
+
+
+import {IngredientDto} from '../../../generated/model/ingredientDto'
+
 type IngredientColumn = 'name' | 'type' | 'recipeCount';
 
 @Component({
@@ -15,26 +19,27 @@ type IngredientColumn = 'name' | 'type' | 'recipeCount';
 })
 export class IngredientsSectionComponent {
   ingredients = [
-    { id: 1, name: 'Carotte', type: 'Légume', recipeCount: 5 },
-    { id: 2, name: 'Poulet', type: 'Viande', recipeCount: 10 },
-    { id: 3, name: 'Saumon', type: 'Poisson', recipeCount: 3 },
-    { id: 4, name: 'Emmental', type: 'Produit-laitier', recipeCount: 8 },
-    { id: 5, name: 'Camembert', type: 'Produit-laitier', recipeCount: 1 },
-    { id: 6, name: 'Courgettes', type: 'Légume', recipeCount: 2 },
-    { id: 7, name: 'Tomates', type: 'Légume', recipeCount: 5 },
-    { id: 8, name: 'Saumon', type: 'Poisson', recipeCount: 3 },
-    { id: 9, name: 'Navet', type: 'Légume', recipeCount: 9 },
-    { id: 10, name: 'Porc', type: 'Viande', recipeCount: 7 },
-    { id: 11, name: 'Colin', type: 'Poisson', recipeCount: 2 },
-    { id: 12, name: 'Brocoli', type: 'Légume', recipeCount: 0 },
-    { id: 13, name: 'Crème fraiche', type: 'Produit-laitier', recipeCount: 8 }
+    { id: 1, name: 'Carotte', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 5 },
+    { id: 2, name: 'Poulet', type: IngredientDto.TypeEnum.Meat, recipeCount: 10 },
+    { id: 3, name: 'Pomme', type: IngredientDto.TypeEnum.Fruit, recipeCount: 2 },
+    { id: 4, name: 'Emmental', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 8 },
+    { id: 5, name: 'Camembert', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 1 },
+    { id: 6, name: 'Courgettes', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 2 },
+    { id: 7, name: 'Tomates', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 5 },
+    { id: 8, name: 'Pâtes', type: IngredientDto.TypeEnum.SaltGrocery, recipeCount: 5 },
+    { id: 9, name: 'Navet', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 9 },
+    { id: 10, name: 'Porc', type: IngredientDto.TypeEnum.Meat, recipeCount: 7 },
+    { id: 11, name: 'Muscade', type: IngredientDto.TypeEnum.Spice, recipeCount: 7 },
+    { id: 12, name: 'Moutarde', type: IngredientDto.TypeEnum.Condiment, recipeCount: 0 },
+    { id: 13, name: 'Crème fraiche', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 8 },
+    { id: 14, name: 'Sucre', type: IngredientDto.TypeEnum.SweetGrocery, recipeCount: 8 }
   ];
 
-  ingredientTypes = ['Légume', 'Viande', 'Poisson', 'Produit-laitier'];
+  ingredientTypes = Object.values(IngredientDto.TypeEnum);
 
   newIngredient = {
     name: '',
-    type: 'Légume',
+    type: IngredientDto.TypeEnum.Vegetable
   };
 
   sortedIngredients = [...this.ingredients];
@@ -49,6 +54,13 @@ export class IngredientsSectionComponent {
 
   hoveredRow: number = -1;
 
+  getBackgroundColor(type: IngredientDto.TypeEnum): string {
+    return typeColors[type];
+  }
+
+  getTranslation(type: IngredientDto.TypeEnum): string {
+    return typeTranslations[type] || type; // Retourne la traduction ou la clé par défaut
+  }
 
   // Méthode pour trier par colonne
   sortBy(column: IngredientColumn) {
@@ -149,6 +161,8 @@ export class IngredientsSectionComponent {
   }
 
   cancelDelete(){
+    this.ingredientToDelete = undefined;
+    this.showPopup = false;
     this.ingredientToDelete = undefined;
   }
 }
