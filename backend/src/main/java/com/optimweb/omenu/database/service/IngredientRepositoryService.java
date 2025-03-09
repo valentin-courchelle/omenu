@@ -46,11 +46,10 @@ public class IngredientRepositoryService {
         return this.toIngredient(this.repository.save(this.toEntity(ingredient)));
     }
 
-    public Ingredient updateIngredient(long id, Ingredient ingredient) throws NotFoundException, BadRequestException {
+    public Ingredient updateIngredient(long id, Ingredient ingredient) throws NotFoundException {
         Optional<IngredientEntity> optIngredient = this.repository.findById(id);
         if(optIngredient.isEmpty()){
-            log.error("No ingredient found with id {}", id);
-            return null;
+            throw new NotFoundException("No ingredient found with id" + id);
         }
         IngredientEntity existedIngredient = optIngredient.get();
         existedIngredient.setName(ingredient.getName());
