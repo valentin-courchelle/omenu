@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
-// Importer le module et la configuration générés
+// Import API générée
 import { ApiModule } from './generated/api.module';
-import {Configuration} from './generated/configuration'
+import { Configuration } from './generated/configuration';
 
-// Fonction de configuration
+// Fonction de configuration pour Swagger
 export function apiConfigurationFactory(): Configuration {
   return new Configuration({
     basePath: 'http://localhost:8080/omenu/api'
@@ -15,16 +15,14 @@ export function apiConfigurationFactory(): Configuration {
 }
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    ApiModule.forRoot(apiConfigurationFactory) // Passez la configuration via forRoot
+    ApiModule.forRoot(apiConfigurationFactory)
   ],
   providers: [
-    provideHttpClient()
+    provideHttpClient(),
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

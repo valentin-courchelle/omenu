@@ -23,17 +23,17 @@
         (mouseleave)="hoveredRow = -1"
         >
           <td>
-            <span *ngIf="editedIngredientId !== ingredient.id || editedField !== 'name'" (click)="editRow(ingredient.id, 'name')">{{ ingredient.name }}</span>
+            <span *ngIf="editedIngredientId !== ingredient.id || editedField !== 'name'" (click)="editRow(ingredient.id!, 'name')">{{ ingredient.name }}</span>
             <input *ngIf="editedIngredientId === ingredient.id && editedField === 'name'" [(ngModel)]="ingredient.name" (blur)="saveEdit()"/>
           </td>
           <td>
-            <span *ngIf="editedIngredientId !== ingredient.id || editedField != 'type'" (click)="editRow(ingredient.id, 'type')" class="type-pill" [ngStyle]="{ 'background-color': getBackgroundColor(ingredient.type) }" [ngClass]="ingredient.type">{{ getTranslation(ingredient.type) }}</span>
+            <span *ngIf="editedIngredientId !== ingredient.id || editedField != 'type'" (click)="editRow(ingredient.id!, 'type')" class="type-pill" [ngStyle]="{ 'background-color': getBackgroundColor(ingredient.type) }" [ngClass]="ingredient.type">{{ getTranslation(ingredient.type) }}</span>
             <select *ngIf="editedIngredientId === ingredient.id && editedField === 'type'" [(ngModel)]="ingredient.type" (blur)="saveEdit()">            
             <option *ngFor="let type of ingredientTypes" [value]="type">{{ type }}</option>
             </select>
           </td>
           <td>{{ ingredient.recipeCount }}
-            <i class="fa fa-trash delete-icon" *ngIf="hoveredRow === i" (click)="deleteIngredient(ingredient.id)"></i>
+            <i class="fa fa-trash delete-icon" *ngIf="hoveredRow === i" (click)="deleteIngredient(ingredient.id!)"></i>
           </td>
         </tr>
       </tbody>

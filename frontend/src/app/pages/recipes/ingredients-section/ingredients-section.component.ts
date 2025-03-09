@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { typeColors } from './type-color';
@@ -7,6 +7,8 @@ import { typeTranslations } from './type-translations';
 
 
 import {IngredientDto} from '../../../generated/model/ingredientDto'
+import { IngredientService } from './ingredient-section.service';
+
 
 type IngredientColumn = 'name' | 'type' | 'recipeCount';
 
@@ -15,9 +17,10 @@ type IngredientColumn = 'name' | 'type' | 'recipeCount';
   standalone: true,
   templateUrl: './ingredients-section.component.html',
   styleUrls: ['./ingredients-section.component.css'],
-  imports: [FormsModule, CommonModule]
+  imports: [FormsModule, CommonModule],
 })
-export class IngredientsSectionComponent {
+export class IngredientsSectionComponent implements OnInit {
+  /*
   ingredients = [
     { id: 1, name: 'Carotte', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 5 },
     { id: 2, name: 'Poulet', type: IngredientDto.TypeEnum.Meat, recipeCount: 10 },
@@ -34,13 +37,21 @@ export class IngredientsSectionComponent {
     { id: 13, name: 'Crème fraiche', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 8 },
     { id: 14, name: 'Sucre', type: IngredientDto.TypeEnum.SweetGrocery, recipeCount: 8 }
   ];
+   */
 
-  ingredientTypes = Object.values(IngredientDto.TypeEnum);
+  constructor(private ingredientService: IngredientService){}
 
-  newIngredient = {
+  ingredients: IngredientDto[] = [];
+
+  ingredientTypes: IngredientDto.TypeEnum[] = [];
+
+  newIngredient : IngredientDto = {
     name: '',
-    type: IngredientDto.TypeEnum.Vegetable
+    type: IngredientDto.TypeEnum.Vegetable,
+    recipeCount: 0
   };
+
+  
 
   sortedIngredients = [...this.ingredients];
   sortColumn: IngredientColumn = 'name'; // Utilisation du type ici
@@ -50,9 +61,31 @@ export class IngredientsSectionComponent {
   editedField: string = '';
 
   showPopup = false;
-  ingredientToDelete: {id: number, name:string, type:string, recipeCount: number} | undefined;
+  ingredientToDelete: IngredientDto | undefined;
 
   hoveredRow: number = -1;
+
+
+  ngOnInit(): void {
+    this.ingredientService.getIngredients().subscribe({
+      next: () => {
+        this.ingredientService.ingredients$().subscribe({
+          next: data => {
+            console.log('Réponse reçue du backend :', data);
+            console.log('Type de la donnée :', typeof data);
+            this.ingredients = data; 
+            this.applySort();       
+          },
+          error: err => console.log('Erreur lors du chargement des ingrédients', err),
+        });
+      },
+      error: err => console.log('Erreur lors de l\'appel à getIngredients', err),
+    });
+  
+    this.ingredientTypes = Object.values(IngredientDto.TypeEnum);
+  }
+
+  
 
   getBackgroundColor(type: IngredientDto.TypeEnum): string {
     return typeColors[type];
@@ -84,6 +117,12 @@ export class IngredientsSectionComponent {
 
     this.sortedIngredients = [...this.ingredients].sort((a, b) => {
       const column = this.sortColumn as keyof typeof a;
+      if(a[column] === undefined){
+        return -1;
+      }
+      if(b[column] === undefined){
+        return -1;
+      }
       if (a[column] < b[column]) {
         return -1 * directionMultiplier;
       }
@@ -105,24 +144,11 @@ export class IngredientsSectionComponent {
     return '';
   }
 
-  generateId(): number {
-    return this.ingredients.length > 0
-      ? Math.max(...this.ingredients.map((ingredient) => ingredient.id)) + 1
-      : 1;
-  }
-
   // Ajouter un ingrédient
   addIngredient() {
     if (this.newIngredient.name.trim()) {
-      const maxId = this.ingredients.length > 0 ? Math.max(...this.ingredients.map(ingredient => ingredient.id)) : 1;
-      this.ingredients.push({
-        id: this.generateId(),
-        name: this.newIngredient.name.trim(),
-        type: this.newIngredient.type,
-        recipeCount: 0,
-      });
+      this.ingredientService.addIngredient(this.newIngredient).subscribe();
       this.newIngredient.name = ''; // Reset input
-      this.applySort(); // Réapplique le tri après ajout
     } else {
       alert('Veuillez entrer un nom pour l\'ingrédient.');
     }
@@ -134,6 +160,12 @@ export class IngredientsSectionComponent {
   }
 
   saveEdit(){
+    if(this.editedIngredientId){
+      const editedIngredient = this.ingredients.find(i=>i.id === this.editedIngredientId);
+      if(editedIngredient){
+        this.ingredientService.updateIngredient(this.editedIngredientId,editedIngredient).subscribe();
+      }
+    }
     this.editedIngredientId = null;
     this.editedField = '';
     this.applySort();
@@ -154,10 +186,12 @@ export class IngredientsSectionComponent {
   }
 
   confirmDelete(){
-    this.ingredients = this.ingredients.filter(i=>i.id !== this.ingredientToDelete?.id);
-    this.ingredientToDelete = undefined;
-    this.showPopup = false;
-    this.applySort();
+    if(this.ingredientToDelete){
+      this.ingredientService.deleteIngredient(this.ingredientToDelete.id!).subscribe()
+      this.ingredientToDelete = undefined;
+      this.showPopup = false;
+      this.applySort();
+    }
   }
 
   cancelDelete(){

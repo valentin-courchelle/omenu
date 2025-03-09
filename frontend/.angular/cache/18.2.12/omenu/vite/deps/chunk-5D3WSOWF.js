@@ -1,4 +1,3 @@
-import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   ApplicationRef,
   Attribute,
@@ -59,12 +58,12 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-FB6BDKAH.js";
+} from "./chunk-SMGPAF3V.js";
 import {
   __async,
   __spreadProps,
   __spreadValues
-} from "./chunk-NQ4HTGF6.js";
+} from "./chunk-NGNUV6BG.js";
 
 // node_modules/@angular/common/fesm2022/common.mjs
 var _DOM = null;
@@ -5114,4 +5113,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-2WG5QLMT.js.map
+//# sourceMappingURL=chunk-5D3WSOWF.js.map

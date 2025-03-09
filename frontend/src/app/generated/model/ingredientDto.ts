@@ -13,7 +13,7 @@ export interface IngredientDto {
     id?: number;
     name: string;
     type: IngredientDto.TypeEnum;
-    recipeCount?: number;
+    recipeCount: number;
 }
 export namespace IngredientDto {
     export type TypeEnum = 'VEGETABLE' | 'MEAT' | 'MILK_PRODUCT' | 'SPICE' | 'SALT_GROCERY' | 'SWEET_GROCERY' | 'FRUIT' | 'CONDIMENT';
