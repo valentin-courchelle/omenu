@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class IngredientService {
 
 
     public List<IngredientDto> getAllIngredient() {
-        return this.repositoryService.getAllIngredient().stream().map(IngredientMapper::toDto).collect(Collectors.toList());
+        return this.repositoryService.getAllIngredient().stream().map(IngredientMapper::toDto).toList();
     }
 
     public IngredientDto getIngredient(long id) throws NotFoundException {

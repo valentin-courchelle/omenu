@@ -25,6 +25,6 @@ public class IngredientEntity {
     @Enumerated(EnumType.STRING)
     private IngredientType type;
 
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<RecipeIngredientEntity> recipeIngredients = new ArrayList<>();
 }

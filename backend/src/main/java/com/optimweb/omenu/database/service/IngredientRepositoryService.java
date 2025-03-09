@@ -1,11 +1,13 @@
 package com.optimweb.omenu.database.service;
 
 import com.optimweb.omenu.database.entity.IngredientEntity;
+import com.optimweb.omenu.database.entity.RecipeIngredientEntity;
 import com.optimweb.omenu.database.repository.IngredientRepository;
 import com.optimweb.omenu.exception.BadRequestException;
 import com.optimweb.omenu.exception.NotFoundException;
 import com.optimweb.omenu.model.Ingredient;
 import com.optimweb.omenu.model.IngredientType;
+import com.optimweb.omenu.model.RecipeIngredient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,6 +76,17 @@ public class IngredientRepositoryService {
                 .id(entity.getId())
                 .name(entity.getName())
                 .type(entity.getType())
+                .recipeIngredients(entity.getRecipeIngredients().stream().map(this::toRecipeIngredient).toList())
+                .build();
+    }
+
+    private RecipeIngredient toRecipeIngredient(RecipeIngredientEntity recipeIngredientEntity) {
+        return RecipeIngredient.builder()
+                .ingredientId(recipeIngredientEntity.getIngredient().getId())
+                .name(recipeIngredientEntity.getIngredient().getName())
+                .unit(recipeIngredientEntity.getUnit())
+                .quantity(recipeIngredientEntity.getQuantity())
+                .type(recipeIngredientEntity.getIngredient().getType())
                 .build();
     }
 

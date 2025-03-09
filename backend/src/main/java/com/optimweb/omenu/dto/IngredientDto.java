@@ -21,5 +21,6 @@ public class IngredientDto {
     @NotNull
     private IngredientType type;
 
+    @NotNull
     private Integer recipeCount;
 }
