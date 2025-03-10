@@ -1,4 +1,4 @@
-import { IngredientDto } from '../../../generated/model/ingredientDto';
+import { IngredientDto } from '../../generated/model/ingredientDto';
 
 export const typeColors: Record<IngredientDto.TypeEnum, string> = {
     VEGETABLE: '#8BC34A',

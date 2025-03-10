@@ -18,7 +18,16 @@
   </div>
 
   <!-- Liste des recettes -->
-  <ul>
-    <li *ngFor="let recipe of filteredRecipes">{{ recipe.name }}</li>
-  </ul>
+  <div class="recipes-list">
+    <app-recipe
+      *ngFor="let recipe of filteredRecipes"
+      [id]="recipe.id"
+      [name]="recipe.name"
+      [duration]="recipe.duration"
+      [servings]="recipe.nbPeople"
+      [rating]="recipe.rating"
+      [ingredients]="recipe.ingredients"
+      [description]="recipe.description">
+    </app-recipe>
+  </div>
 </div>

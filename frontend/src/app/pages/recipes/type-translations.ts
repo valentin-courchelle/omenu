@@ -1,4 +1,4 @@
-import { IngredientDto } from '../../../generated/model/ingredientDto';
+import { IngredientDto } from '../../generated/model/ingredientDto';
 
 export const typeTranslations: Record<IngredientDto.TypeEnum, string> = {
     VEGETABLE: 'Légume',

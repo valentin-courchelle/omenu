@@ -1,23 +1,47 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+import { typeColors } from '../type-color';
+import { typeTranslations } from '../type-translations';
+
+
+import {RecipeDto} from '../../../generated/model/recipeDto'
+import { RecipesService } from './recipes-section.service';
+import { IngredientDto } from '../../../generated/model/ingredientDto';
+import { RecipeComponent } from '../../../components/recipe/recipe.component';
 
 @Component({
   selector: 'app-recipes-section',
   standalone: true,
   templateUrl: './recipes-section.component.html',
   styleUrls: ['./recipes-section.component.css'],
-  imports: [FormsModule, CommonModule]
+  imports: [FormsModule, CommonModule, RecipeComponent]
 })
-export class RecipesSectionComponent {
-  recipes = [
-    { name: 'Spaghetti Bolognese' },
-    { name: 'Poulet Curry' },
-    { name: 'Salade César' }
-  ];
-
+export class RecipesSectionComponent implements OnInit{
+  
+  constructor(private recipesService: RecipesService){}
+  
+  recipes: RecipeDto[] = [];
+  
   searchTerm = '';
-  filteredRecipes = this.recipes;
+  filteredRecipes: RecipeDto[] = [];
+  
+  ngOnInit(): void {
+    this.recipesService.getRecipes().subscribe({
+          next: () => {
+            this.recipesService.recipes$().subscribe({
+              next: data => {
+                this.recipes = data; 
+                this.filteredRecipes = this.recipes;
+              },
+              error: err => console.log('Erreur lors du chargement des recettes', err),
+            });
+          },
+          error: err => console.log('Erreur lors de l\'appel à getRecipes', err),
+        });      
+  }
+
 
   searchRecipes() {
     this.filteredRecipes = this.recipes.filter(recipe =>
@@ -26,8 +50,23 @@ export class RecipesSectionComponent {
   }
 
   addRecipe() {
-    const newRecipe = { name: 'Nouvelle Recette ' + (this.recipes.length + 1) };
+    const newRecipe : RecipeDto = {
+      name: 'Nouvelle Recette ' + (this.recipes.length + 1),
+      duration: 0,
+      nbPeople: 0,
+      rating: 0,
+      season: [],
+      ingredients: []
+    };
     this.recipes.push(newRecipe);
-    this.searchRecipes(); // Actualise la liste filtrée
+    this.searchRecipes();
   }
+
+    getBackgroundColor(type: IngredientDto.TypeEnum): string {
+      return typeColors[type];
+    }
+  
+    getTranslation(type: IngredientDto.TypeEnum): string {
+      return typeTranslations[type] || type;
+    }
 }

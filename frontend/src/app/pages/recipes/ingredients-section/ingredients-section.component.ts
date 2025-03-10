@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { typeColors } from './type-color';
-import { typeTranslations } from './type-translations';
+import { typeColors } from '../type-color';
+import { typeTranslations } from '../type-translations';
 
 
 import {IngredientDto} from '../../../generated/model/ingredientDto'
@@ -20,24 +20,6 @@ type IngredientColumn = 'name' | 'type' | 'recipeCount';
   imports: [FormsModule, CommonModule],
 })
 export class IngredientsSectionComponent implements OnInit {
-  /*
-  ingredients = [
-    { id: 1, name: 'Carotte', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 5 },
-    { id: 2, name: 'Poulet', type: IngredientDto.TypeEnum.Meat, recipeCount: 10 },
-    { id: 3, name: 'Pomme', type: IngredientDto.TypeEnum.Fruit, recipeCount: 2 },
-    { id: 4, name: 'Emmental', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 8 },
-    { id: 5, name: 'Camembert', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 1 },
-    { id: 6, name: 'Courgettes', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 2 },
-    { id: 7, name: 'Tomates', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 5 },
-    { id: 8, name: 'Pâtes', type: IngredientDto.TypeEnum.SaltGrocery, recipeCount: 5 },
-    { id: 9, name: 'Navet', type: IngredientDto.TypeEnum.Vegetable, recipeCount: 9 },
-    { id: 10, name: 'Porc', type: IngredientDto.TypeEnum.Meat, recipeCount: 7 },
-    { id: 11, name: 'Muscade', type: IngredientDto.TypeEnum.Spice, recipeCount: 7 },
-    { id: 12, name: 'Moutarde', type: IngredientDto.TypeEnum.Condiment, recipeCount: 0 },
-    { id: 13, name: 'Crème fraiche', type: IngredientDto.TypeEnum.MilkProduct, recipeCount: 8 },
-    { id: 14, name: 'Sucre', type: IngredientDto.TypeEnum.SweetGrocery, recipeCount: 8 }
-  ];
-   */
 
   constructor(private ingredientService: IngredientService){}
 
@@ -92,7 +74,7 @@ export class IngredientsSectionComponent implements OnInit {
   }
 
   getTranslation(type: IngredientDto.TypeEnum): string {
-    return typeTranslations[type] || type; // Retourne la traduction ou la clé par défaut
+    return typeTranslations[type] || type; 
   }
 
   // Méthode pour trier par colonne
@@ -136,9 +118,9 @@ export class IngredientsSectionComponent implements OnInit {
   getSortClass(column: string): string {
     if (this.sortColumn === column) {
       return this.sortDirection === 'asc'
-        ? 'sort-icon sort-asc' // Flèche vers le bas
+        ? 'sort-icon sort-asc' 
         : this.sortDirection === 'desc'
-        ? 'sort-icon sort-desc' // Flèche vers le haut
+        ? 'sort-icon sort-desc'
         : '';
     }
     return '';
@@ -148,7 +130,7 @@ export class IngredientsSectionComponent implements OnInit {
   addIngredient() {
     if (this.newIngredient.name.trim()) {
       this.ingredientService.addIngredient(this.newIngredient).subscribe();
-      this.newIngredient.name = ''; // Reset input
+      this.newIngredient.name = ''; 
     } else {
       alert('Veuillez entrer un nom pour l\'ingrédient.');
     }

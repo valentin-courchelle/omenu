@@ -12,13 +12,13 @@ import { RecipeIngredientDto } from './recipeIngredientDto';
 
 export interface RecipeDto { 
     id?: number;
-    name?: string;
+    name: string;
     description?: string;
-    duration?: number;
-    rating?: number;
-    nbPeople?: number;
-    season?: Array<RecipeDto.SeasonEnum>;
-    ingredients?: Array<RecipeIngredientDto>;
+    duration: number;
+    rating: number;
+    nbPeople: number;
+    season: Array<RecipeDto.SeasonEnum>;
+    ingredients: Array<RecipeIngredientDto>;
 }
 export namespace RecipeDto {
     export type SeasonEnum = 'JANUARY' | 'FEBRUARY' | 'MARCH' | 'APRIL' | 'MAY' | 'JUNE' | 'JULY' | 'AUGUST' | 'SEPTEMBER' | 'OCTOBER' | 'NOVEMBER' | 'DECEMBER';
