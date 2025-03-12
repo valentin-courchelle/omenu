@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RecipeDto } from '../../../../generated';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
 
 @Component({
   selector: 'app-recipe',
@@ -10,29 +11,13 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./recipe.component.scss'],
   imports: [CommonModule, ReactiveFormsModule]
 })
-export class RecipeComponent implements OnInit {
-  @Input() recipe!: RecipeDto;
-  form!: FormGroup;
-  isEditing = false;
-  isOpen = false;
+export class RecipeComponent extends BaseRecipeComponent  {
 
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit() {
-    this.initForm();
+  constructor(protected override fb: FormBuilder) {
+    super(fb);
   }
 
-  private initForm() {
-    this.form = this.fb.group({
-      name: [this.recipe?.name || ''],
-      duration: [this.recipe?.duration || ''],
-      nbPeople: [this.recipe?.nbPeople || ''],
-      rating: [this.recipe?.rating || ''],
-      description: [this.recipe?.description || ''],
-    });
-  }
-
-  toggleDetails() {
+  override toggleDetails() {
     this.isOpen = !this.isOpen;
   }
 
@@ -41,18 +26,14 @@ export class RecipeComponent implements OnInit {
     this.isEditing = true;
   }
 
-  saveModification() {
+  override saveModification() {
     Object.assign(this.recipe, this.form.value);
     // TODO: call backend save recipe endpoint
     this.exitEditMode();
   }
 
-  cancelModification() {
+  override cancelModification() {
     this.form.patchValue(this.recipe);
     this.exitEditMode();
-  }
-
-  exitEditMode() {
-    this.isEditing = false;
   }
 }

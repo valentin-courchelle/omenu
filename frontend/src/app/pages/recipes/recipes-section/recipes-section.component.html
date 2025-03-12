@@ -19,10 +19,18 @@
 
   <!-- Liste des recettes -->
   <div class="recipes-list">
+    <div *ngIf="showNewRecipe" class="new-recipe-overlay">
+      <app-new-recipe [recipe]="{name: '', duration: 0, nbPeople: 0, rating: 0, ingredients: [], description: '', season: []}"
+      [isOpen]="true"
+      [isEditing]="true"
+      (closeNewRecipe)="showNewRecipe = false"
+      (confirmNewRecipe)="saveNewRecipe($event)"></app-new-recipe>
+    </div>
     <ng-container *ngFor="let recipe of filteredRecipes">
         <app-recipe
           [recipe]="recipe"
-          (edit)="editingRecipeId = recipe.id">
+          [isOpen]="false"
+          [isEditing]="false">
         </app-recipe>
     </ng-container>
   </div>

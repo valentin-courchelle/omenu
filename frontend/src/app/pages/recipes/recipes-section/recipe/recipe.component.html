@@ -1,75 +1,74 @@
 <div *ngIf="!isEditing" class="recipe-card" (click)="toggleDetails()">
-    <div class="recipe-header">
-      <h3>{{ recipe.name }}</h3>
-      <div class="recipe-info">
-        <span class="icon"><i class="fas fa-stopwatch"></i> {{ recipe.duration }} min</span>
-        <span class="icon"><i class="fas fa-user"></i> {{ recipe.nbPeople }}</span>
-        <span class="icon">
-          <i class="fas fa-star" *ngFor="let _ of [].constructor(5); let i = index"
-            [class.filled]="i < recipe.rating"></i>
-        </span>
-      </div>
-      <i class="fas fa-chevron-right chevron" [class.open]="isOpen"></i>
-    </div>
-
-    <div class="recipe-details" *ngIf="isOpen">
-      <h4>Ingrédients</h4>
-      <div class="ingredients-list">
-        <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
-          {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
-        </div>
-      </div>
-    
-      <div class="description">
-        {{ recipe.description }}
-      </div>
-    </div>
-    <div class="recipe-footer" *ngIf="isOpen">
-      <div class="actions">
-        <button class="edit-button" (click)="toggleEditionMode()">Modifier</button>
-      </div>
-    </div>    
-</div>
-
-
-<!--  Edition mode -->
-<div *ngIf="isEditing" class="recipe-card" [formGroup]="form">
   <div class="recipe-header">
-    <input type="text" formControlName="name" class="recipe-title" placeholder="Nom de la recette">
-    
+    <h3>{{ recipe.name }}</h3>
     <div class="recipe-info">
+      <span class="icon"><i class="fas fa-stopwatch"></i> {{ recipe.duration }} min</span>
+      <span class="icon"><i class="fas fa-user"></i> {{ recipe.nbPeople }}</span>
       <span class="icon">
-        <i class="fas fa-stopwatch"></i>
-        <input type="number" formControlName="duration" min="1" class="small-input" placeholder="Durée">
-      </span>
-      <span class="icon">
-        <i class="fas fa-user"></i>
-        <input type="number" formControlName="nbPeople" min="1" class="small-input" placeholder="Nb Pers.">
-      </span>
-      <span class="icon">
-        <i class="fas fa-star"></i>
-        <input type="number" formControlName="rating" min="0" max="5" class="small-input" placeholder="Note">
+        <i class="fas fa-star" *ngFor="let _ of [].constructor(5); let i = index"
+          [class.filled]="i < recipe.rating"></i>
       </span>
     </div>
     <i class="fas fa-chevron-right chevron" [class.open]="isOpen"></i>
   </div>
 
-  <div class="recipe-details">
-      <h4>Ingrédients</h4>
-      <div class="ingredients-list">
-          <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
-          {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
-          </div>
+  <div class="recipe-details" *ngIf="isOpen">
+    <h4>Ingrédients</h4>
+    <div class="ingredients-list">
+      <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
+        {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
       </div>
-
-    <h4>Description</h4>
-    <textarea formControlName="description" class="description" placeholder="Description"></textarea>
+    </div>
+  
+    <div class="description">
+      {{ recipe.description }}
+    </div>
   </div>
   <div class="recipe-footer" *ngIf="isOpen">
     <div class="actions">
-      <button class="cancel-button" (click)="cancelModification()">Annuler</button>
-      <button class="save-button" (click)="saveModification()">Sauvegarder</button>
+      <button class="edit-button" (click)="toggleEditionMode()">Modifier</button>
     </div>
-  </div>  
+  </div>    
 </div>
+
+
+<!--  Edition mode -->
+<div *ngIf="isEditing" class="recipe-card" [formGroup]="form">
+<div class="recipe-header">
+  <input type="text" formControlName="name" class="recipe-title" placeholder="Nom de la recette">
   
+  <div class="recipe-info">
+    <span class="icon">
+      <i class="fas fa-stopwatch"></i>
+      <input type="number" formControlName="duration" min="1" class="small-input" placeholder="Durée">
+    </span>
+    <span class="icon">
+      <i class="fas fa-user"></i>
+      <input type="number" formControlName="nbPeople" min="1" class="small-input" placeholder="Nb Pers.">
+    </span>
+    <span class="icon">
+      <i class="fas fa-star"></i>
+      <input type="number" formControlName="rating" min="0" max="5" class="small-input" placeholder="Note">
+    </span>
+  </div>
+  <i class="fas fa-chevron-right chevron" [class.open]="isOpen"></i>
+</div>
+
+<div class="recipe-details">
+    <h4>Ingrédients</h4>
+    <div class="ingredients-list">
+        <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
+        {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
+        </div>
+    </div>
+
+  <h4>Description</h4>
+  <textarea formControlName="description" class="description" placeholder="Description"></textarea>
+</div>
+<div class="recipe-footer" *ngIf="isOpen">
+  <div class="actions">
+    <button class="cancel-button" (click)="cancelModification()">Annuler</button>
+    <button class="save-button" (click)="saveModification()">Sauvegarder</button>
+  </div>
+</div>  
+</div>

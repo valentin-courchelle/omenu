@@ -10,21 +10,22 @@ import {RecipeDto} from '../../../generated/model/recipeDto'
 import { RecipesService } from './recipes-section.service';
 import { IngredientDto } from '../../../generated/model/ingredientDto';
 import { RecipeComponent } from './recipe/recipe.component';
+import { NewRecipeComponent } from './new-recipe/new-recipe.component';
+import { BaseRecipeComponent } from './base-recipe/base-recipe.component';
 
 @Component({
   selector: 'app-recipes-section',
   standalone: true,
   templateUrl: './recipes-section.component.html',
   styleUrls: ['./recipes-section.component.css'],
-  imports: [FormsModule, CommonModule, RecipeComponent]
+  imports: [FormsModule, CommonModule, RecipeComponent, NewRecipeComponent]
 })
 export class RecipesSectionComponent implements OnInit{
   
   constructor(private recipesService: RecipesService){}
   
   recipes: RecipeDto[] = [];
-  editingRecipeId: number | undefined = undefined;
-
+  showNewRecipe = false;
   
   searchTerm = '';
   filteredRecipes: RecipeDto[] = [];
@@ -52,24 +53,28 @@ export class RecipesSectionComponent implements OnInit{
   }
 
   addRecipe() {
-    const newRecipe : RecipeDto = {
-      name: 'Nouvelle Recette ' + (this.recipes.length + 1),
-      duration: 0,
-      nbPeople: 0,
-      rating: 0,
-      season: [],
-      ingredients: []
-    };
-    this.recipes.push(newRecipe);
-    this.searchRecipes();
+    this.showNewRecipe = true;
   }
 
-  updateRecipe(updatedRecipe: RecipeDto) {
-    const index = this.filteredRecipes.findIndex(r => r.id === updatedRecipe.id);
-    if (index !== -1) {
-      this.filteredRecipes[index] = updatedRecipe;
-    }
-    this.editingRecipeId = undefined;
+  saveNewRecipe(newRecipe : RecipeDto){
+    this.recipesService.addRecipe(newRecipe).subscribe({
+      next: () => {
+        this.recipesService.getRecipes().subscribe({
+          next: () => {
+            this.recipesService.recipes$().subscribe({
+              next: data => {
+                this.recipes = data; 
+                this.filteredRecipes = this.recipes;
+                this.showNewRecipe = false;
+              },
+              error: err => console.log('Erreur lors du chargement des recettes', err),
+            });
+          },
+          error: err => console.log('Erreur lors de l\'appel à getRecipes', err),
+        });
+      },
+      error: err => console.log('Erreur lors de l\'ajout de la recette', err),
+    });
   }
 
   getBackgroundColor(type: IngredientDto.TypeEnum): string {
