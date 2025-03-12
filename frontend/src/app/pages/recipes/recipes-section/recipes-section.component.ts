@@ -9,7 +9,7 @@ import { typeTranslations } from '../type-translations';
 import {RecipeDto} from '../../../generated/model/recipeDto'
 import { RecipesService } from './recipes-section.service';
 import { IngredientDto } from '../../../generated/model/ingredientDto';
-import { RecipeComponent } from '../../../components/recipe/recipe.component';
+import { RecipeComponent } from './recipe/recipe.component';
 
 @Component({
   selector: 'app-recipes-section',
@@ -23,6 +23,8 @@ export class RecipesSectionComponent implements OnInit{
   constructor(private recipesService: RecipesService){}
   
   recipes: RecipeDto[] = [];
+  editingRecipeId: number | undefined = undefined;
+
   
   searchTerm = '';
   filteredRecipes: RecipeDto[] = [];
@@ -62,11 +64,19 @@ export class RecipesSectionComponent implements OnInit{
     this.searchRecipes();
   }
 
-    getBackgroundColor(type: IngredientDto.TypeEnum): string {
-      return typeColors[type];
+  updateRecipe(updatedRecipe: RecipeDto) {
+    const index = this.filteredRecipes.findIndex(r => r.id === updatedRecipe.id);
+    if (index !== -1) {
+      this.filteredRecipes[index] = updatedRecipe;
     }
-  
-    getTranslation(type: IngredientDto.TypeEnum): string {
-      return typeTranslations[type] || type;
-    }
+    this.editingRecipeId = undefined;
+  }
+
+  getBackgroundColor(type: IngredientDto.TypeEnum): string {
+    return typeColors[type];
+  }
+
+  getTranslation(type: IngredientDto.TypeEnum): string {
+    return typeTranslations[type] || type;
+  }
 }

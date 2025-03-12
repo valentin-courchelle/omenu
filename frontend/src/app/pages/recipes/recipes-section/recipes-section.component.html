@@ -19,15 +19,13 @@
 
   <!-- Liste des recettes -->
   <div class="recipes-list">
-    <app-recipe
-      *ngFor="let recipe of filteredRecipes"
-      [id]="recipe.id"
-      [name]="recipe.name"
-      [duration]="recipe.duration"
-      [servings]="recipe.nbPeople"
-      [rating]="recipe.rating"
-      [ingredients]="recipe.ingredients"
-      [description]="recipe.description">
-    </app-recipe>
+    <ng-container *ngFor="let recipe of filteredRecipes">
+        <app-recipe
+          [recipe]="recipe"
+          (edit)="editingRecipeId = recipe.id">
+        </app-recipe>
+    </ng-container>
   </div>
+
+
 </div>
