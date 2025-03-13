@@ -13,11 +13,14 @@ import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
 })
 export class RecipeComponent extends BaseRecipeComponent  {
 
+  isOpen = false;
+  isEditing = false;
+
   constructor(protected override fb: FormBuilder) {
     super(fb);
   }
 
-  override toggleDetails() {
+  toggleDetails() {
     this.isOpen = !this.isOpen;
   }
 
@@ -36,4 +39,8 @@ export class RecipeComponent extends BaseRecipeComponent  {
     this.form.patchValue(this.recipe);
     this.exitEditMode();
   }
+
+  protected exitEditMode() {
+    this.isEditing = false;
+  };
 }

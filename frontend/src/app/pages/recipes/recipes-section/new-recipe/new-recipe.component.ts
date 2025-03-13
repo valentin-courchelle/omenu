@@ -22,10 +22,6 @@ export class NewRecipeComponent extends BaseRecipeComponent {
     this.form = this.getEmptyForm();
   }
 
-  override toggleDetails(): void {
-    //Nothing to do;
-  }
-
   override saveModification(): void {
     Object.assign(this.recipe, this.form.value);
     this.confirmNewRecipe.emit(this.recipe);

@@ -1,12 +1,10 @@
-import { Component, Directive, Input, OnInit } from '@angular/core';
+import { Directive, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RecipeDto } from '../../../../generated';
 
 @Directive()
 export abstract class BaseRecipeComponent implements OnInit{
   @Input() recipe!: RecipeDto;
-  @Input() isOpen!: boolean;
-  @Input() isEditing!: boolean;
   
   form!: FormGroup;
 
@@ -35,12 +33,6 @@ export abstract class BaseRecipeComponent implements OnInit{
       description: [''],
     });
   }
-
-  protected exitEditMode() {
-    this.isEditing = false;
-  };
-  
-  abstract toggleDetails(): void;
 
   abstract saveModification(): void;
 

@@ -1,4 +1,4 @@
-<div *ngIf="isEditing" class="recipe-card" [formGroup]="form">
+<div class="recipe-card" [formGroup]="form">
   <div class="recipe-header">
     <input type="text" formControlName="name" class="recipe-title" placeholder="Nom de la recette">
     
@@ -16,7 +16,6 @@
         <input type="number" formControlName="rating" min="0" max="5" class="small-input" placeholder="Note">
       </span>
     </div>
-    <i class="fas fa-chevron-right chevron" [class.open]="isOpen"></i>
   </div>
   
   <div class="recipe-details">
@@ -30,7 +29,7 @@
     <h4>Description</h4>
     <textarea formControlName="description" class="description" placeholder="Description"></textarea>
   </div>
-  <div class="recipe-footer" *ngIf="isOpen">
+  <div class="recipe-footer">
     <div class="actions">
       <button class="cancel-button" (click)="cancelModification()">Annuler</button>
       <button class="save-button" (click)="saveModification()">Sauvegarder</button>

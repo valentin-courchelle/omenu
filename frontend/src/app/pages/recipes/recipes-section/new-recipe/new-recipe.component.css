@@ -1,0 +1,123 @@
+.recipe-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px 0;
+    background: #fff;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .recipe-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .recipe-info {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #555;
+    width: 400px;
+    justify-content: space-around;
+  
+    .icon {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  
+    i {
+      color: gold;
+    }
+  }
+  
+  .chevron {
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+  
+  .chevron.open {
+    transform: rotate(90deg);
+  }
+  
+  .recipe-details {
+      margin-top: 10px;
+      padding-top: 10px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 5px;
+    
+      .ingredients-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 10px; 
+        padding: 10px 0;
+      }
+    
+      .ingredient-item {
+        background: #f9f9f9;
+        padding: 8px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 14px;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+    }
+  
+  
+  .description {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    max-height: 100px; 
+    min-height: 50px; 
+    overflow-y: auto; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f9f9f9;
+    width: auto;
+    padding: 10px;
+  }
+  
+  .actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+  
+    .edit-button {
+      background: #607D8B;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  
+    .save-button {
+      background: #4CAF50;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  
+    .cancel-button {
+      background: #f44336;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+    
