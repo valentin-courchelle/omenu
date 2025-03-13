@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IngredientDto } from '../../../generated/model/ingredientDto';
 import { IngredientControllerService } from '../../../generated/api/ingredientController.service';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, map } from 'rxjs/operators';
 import { parseBlobToObservableJson } from '../../../utils';
 
 @Injectable({
@@ -22,6 +22,21 @@ export class IngredientService {
         return [response];
       }),
       tap(ingredients => this.ingredientsCache.next(ingredients))
+    );
+  }
+
+  searchIngredients(query: string): Observable<IngredientDto[]> {
+    if(this.ingredientsCache.value.length === 0){
+      return this.getIngredients().pipe(
+        map(ingredients => {
+          return ingredients.filter(ingredient => ingredient.name.toLowerCase().includes(query.toLowerCase()));
+        })
+      );
+    }
+    return this.ingredientsCache.pipe(
+      map(ingredients => {
+        return ingredients.filter(ingredient => ingredient.name.toLowerCase().includes(query.toLowerCase()));
+      })
     );
   }
 

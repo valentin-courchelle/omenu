@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { RecipeDto } from '../../../../generated';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
+import { RecipeService } from '../../services/recipe.service';
 
 @Component({
   selector: 'app-recipe',
@@ -16,7 +16,7 @@ export class RecipeComponent extends BaseRecipeComponent  {
   isOpen = false;
   isEditing = false;
 
-  constructor(protected override fb: FormBuilder) {
+  constructor(protected override fb: FormBuilder, private recipeService: RecipeService) {
     super(fb);
   }
 
@@ -31,7 +31,9 @@ export class RecipeComponent extends BaseRecipeComponent  {
 
   override saveModification() {
     Object.assign(this.recipe, this.form.value);
-    // TODO: call backend save recipe endpoint
+    if(this.recipe.id) {
+      this.recipeService.updateRecipe(this.recipe.id, this.recipe).subscribe();
+    }
     this.exitEditMode();
   }
 

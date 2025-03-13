@@ -7,11 +7,10 @@ import { typeTranslations } from '../type-translations';
 
 
 import {RecipeDto} from '../../../generated/model/recipeDto'
-import { RecipesService } from './recipes-section.service';
+import { RecipesSectionService } from '../services/recipes-section.service';
 import { IngredientDto } from '../../../generated/model/ingredientDto';
 import { RecipeComponent } from './recipe/recipe.component';
 import { NewRecipeComponent } from './new-recipe/new-recipe.component';
-import { BaseRecipeComponent } from './base-recipe/base-recipe.component';
 
 @Component({
   selector: 'app-recipes-section',
@@ -22,7 +21,7 @@ import { BaseRecipeComponent } from './base-recipe/base-recipe.component';
 })
 export class RecipesSectionComponent implements OnInit{
   
-  constructor(private recipesService: RecipesService){}
+  constructor(private recipesSectionService: RecipesSectionService){}
   
   recipes: RecipeDto[] = [];
   showNewRecipe = false;
@@ -31,9 +30,9 @@ export class RecipesSectionComponent implements OnInit{
   filteredRecipes: RecipeDto[] = [];
   
   ngOnInit(): void {
-    this.recipesService.getRecipes().subscribe({
+    this.recipesSectionService.getRecipes().subscribe({
           next: () => {
-            this.recipesService.recipes$().subscribe({
+            this.recipesSectionService.recipes$().subscribe({
               next: data => {
                 this.recipes = data; 
                 this.filteredRecipes = this.recipes;
@@ -52,16 +51,16 @@ export class RecipesSectionComponent implements OnInit{
     );
   }
 
-  addRecipe() {
+  openNewRecipe() {
     this.showNewRecipe = true;
   }
 
   saveNewRecipe(newRecipe : RecipeDto){
-    this.recipesService.addRecipe(newRecipe).subscribe({
+    this.recipesSectionService.addRecipe(newRecipe).subscribe({
       next: () => {
-        this.recipesService.getRecipes().subscribe({
+        this.recipesSectionService.getRecipes().subscribe({
           next: () => {
-            this.recipesService.recipes$().subscribe({
+            this.recipesSectionService.recipes$().subscribe({
               next: data => {
                 this.recipes = data; 
                 this.filteredRecipes = this.recipes;

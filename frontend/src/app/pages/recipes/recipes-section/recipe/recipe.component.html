@@ -6,7 +6,7 @@
       <span class="icon"><i class="fas fa-user"></i> {{ recipe.nbPeople }}</span>
       <span class="icon">
         <i class="fas fa-star" *ngFor="let _ of [].constructor(5); let i = index"
-          [class.filled]="i < recipe.rating"></i>
+          [ngClass]="{'filled': i < recipe.rating}"></i>
       </span>
     </div>
     <i class="fas fa-chevron-right chevron" [class.open]="isOpen"></i>

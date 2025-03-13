@@ -7,7 +7,7 @@ import { typeTranslations } from '../type-translations';
 
 
 import {IngredientDto} from '../../../generated/model/ingredientDto'
-import { IngredientService } from './ingredient-section.service';
+import { IngredientService } from '../services/ingredient.service';
 
 
 type IngredientColumn = 'name' | 'type' | 'recipeCount';

@@ -13,16 +13,22 @@
 .recipe-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* Aligne h3 à gauche, chevron à droite */
+  width: 100%; /* Assurez-vous qu'il prend toute la largeur disponible */
+}
+
+.recipe-header h3 {
+  width: 400px;
 }
 
 .recipe-info {
+  width: 400px;
+  text-align: center; /* Centre le contenu à l'intérieur */
   display: flex;
+  justify-content: space-between; /* Centre les icônes à l'intérieur */
   gap: 10px;
   font-size: 14px;
   color: #555;
-  width: 400px;
-  justify-content: space-around;
 
   .icon {
     display: flex;
@@ -30,8 +36,16 @@
     gap: 5px;
   }
 
-  i {
+  i{
     color: gold;
+  }
+
+  .fa-star {
+    color: lightgray; /* Par défaut, les étoiles sont grises */
+  }
+  
+  .filled {
+    color: gold; /* Seules les étoiles "filled" seront dorées */
   }
 }
 
@@ -75,18 +89,18 @@
 
 
 .description {
-  margin-top: 10px;
   font-size: 14px;
   color: #333;
-  max-height: 100px; 
-  min-height: 50px; 
-  overflow-y: auto; 
+  max-height: 100px;
+  min-height: 50px;
+  overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
   background: #f9f9f9;
-  width: auto;
+  width: calc(100% - 20px);
   padding: 10px;
 }
+  
 
 .actions {
   margin-top: 15px;

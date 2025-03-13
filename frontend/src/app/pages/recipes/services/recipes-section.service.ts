@@ -8,7 +8,7 @@ import { parseBlobToObservableJson } from '../../../utils';
 @Injectable({
   providedIn: 'root'
 })
-export class RecipesService {
+export class RecipesSectionService {
 
   private recipesCache = new BehaviorSubject<RecipeDto[]>([]);
   

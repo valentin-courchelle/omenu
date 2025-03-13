@@ -2,4 +2,4 @@
 
 /backend/.idea
 
-/frontend/.tsbuildinfo
+/frontend/.angular/cache/*
