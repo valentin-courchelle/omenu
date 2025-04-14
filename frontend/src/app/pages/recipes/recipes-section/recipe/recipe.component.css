@@ -18,7 +18,14 @@
 }
 
 .recipe-header h3 {
-  width: 400px;
+  width: 600px;
+}
+
+.recipe-title{
+  width: 600px;
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 18px 0px;
 }
 
 .recipe-info {
@@ -46,6 +53,10 @@
   
   .filled {
     color: gold; /* Seules les étoiles "filled" seront dorées */
+  }
+
+  .small-input{
+    width: 60px;
   }
 }
 
@@ -85,20 +96,35 @@
       color: #333;
       border: 1px solid #ddd;
     }
+
+    .description {
+      white-space: pre-line;
+      font-size: 14px;
+      color: #333;
+      max-height: 200px;
+      min-height: 50px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+      padding: 10px;
+    }
   }
 
-
-.description {
+.description-input {
+  white-space: pre-line;
   font-size: 14px;
   color: #333;
-  max-height: 100px;
+  max-height: 200px;
   min-height: 50px;
   overflow-y: auto;
+  overflow-x: hidden;          /* Prevent horizontal scroll */
   border: 1px solid #ccc;
   border-radius: 5px;
   background: #f9f9f9;
   width: calc(100% - 20px);
   padding: 10px;
+  box-sizing: border-box;      /* Important! Ensures width includes padding */
 }
   
 

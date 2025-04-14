@@ -3,13 +3,14 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
 import { RecipeDto } from '../../../../generated';
 import { CommonModule } from '@angular/common';
+import { AutoResizeTextareaDirective } from '../../../../directives/auto-resize-textarea.directive';
 
 @Component({
   selector: 'app-new-recipe',
   standalone: true,
   templateUrl: './new-recipe.component.html',
   styleUrls: ['./new-recipe.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, AutoResizeTextareaDirective]
   
 })
 export class NewRecipeComponent extends BaseRecipeComponent {

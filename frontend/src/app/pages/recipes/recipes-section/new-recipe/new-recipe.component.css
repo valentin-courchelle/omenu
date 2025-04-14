@@ -14,6 +14,13 @@
     align-items: center;
     justify-content: space-between;
   }
+
+  .recipe-title{
+    width: 600px;
+    font-size: 1.17em;
+    font-weight: bold;
+    margin: 18px 0px;
+  }
   
   .recipe-info {
     display: flex;
@@ -31,6 +38,11 @@
   
     i {
       color: gold;
+    }
+
+    .small-input{
+      width: auto;
+      min-width: 50px;
     }
   }
   
@@ -64,18 +76,22 @@
 }
   
   
-  .description {
-    font-size: 14px;
-    color: #333;
-    max-height: 100px;
-    min-height: 50px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: #f9f9f9;
-    width: calc(100% - 20px);
-    padding: 10px;
-  }
+.description {
+  font-size: 14px;
+  color: #333;
+  max-height: 200px;
+  min-height: 50px;
+  overflow-y: auto;        
+  overflow-x: hidden;      
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+  width: 100%;             
+  padding: 10px;
+  box-sizing: border-box;  
+  resize: vertical;        
+}
+
   
   .actions {
     margin-top: 15px;
