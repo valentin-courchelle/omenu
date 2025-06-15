@@ -3,13 +3,14 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
 import { RecipeService } from '../../services/recipe.service';
+import { RecipeIngredientListComponent } from './recipe-ingredient-list/recipe-ingredient-list.component';
 
 @Component({
   selector: 'app-recipe',
   standalone: true,
   templateUrl: './recipe.component.html',
   styleUrls: ['./recipe.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, RecipeIngredientListComponent]
 })
 export class RecipeComponent extends BaseRecipeComponent  {
 

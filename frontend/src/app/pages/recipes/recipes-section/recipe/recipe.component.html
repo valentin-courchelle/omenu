@@ -13,13 +13,10 @@
   </div>
 
   <div class="recipe-details" *ngIf="isOpen">
-    <h4>Ingrédients</h4>
-    <div class="ingredients-list">
-      <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
-        {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
-      </div>
-    </div>
-  
+    <app-recipe-ingredient-list
+      [recipeIngredients]="recipe.ingredients"
+      [editingMode] = "isEditing">
+    </app-recipe-ingredient-list>
     <div class="description">
       {{ recipe.description }}
     </div>
@@ -55,12 +52,10 @@
 </div>
 
 <div class="recipe-details">
-    <h4>Ingrédients</h4>
-    <div class="ingredients-list">
-        <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
-        {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
-        </div>
-    </div>
+  <app-recipe-ingredient-list
+    [recipeIngredients]="recipe.ingredients"
+    [editingMode] = "isEditing">
+  </app-recipe-ingredient-list>
 
   <h4>Description</h4>
   <textarea formControlName="description" class="description-input" placeholder="Description"></textarea>

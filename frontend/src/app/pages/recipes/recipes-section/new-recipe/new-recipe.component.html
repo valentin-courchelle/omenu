@@ -19,12 +19,10 @@
   </div>
   
   <div class="recipe-details">
-      <h4>Ingrédients</h4>
-      <div class="ingredients-list">
-          <div class="ingredient-item" *ngFor="let ingredient of recipe.ingredients">
-          {{ ingredient.name }} ( {{ ingredient.quantity }} {{ ingredient.unit}} )
-          </div>
-      </div>
+    <app-recipe-ingredient-list
+      [recipeIngredients]="recipe.ingredients"
+      [editingMode] = "true">
+    </app-recipe-ingredient-list>
   
     <h4>Description</h4>
     <textarea formControlName="description" class="description" placeholder="Description" autoResize  [maxHeight]="200"></textarea>

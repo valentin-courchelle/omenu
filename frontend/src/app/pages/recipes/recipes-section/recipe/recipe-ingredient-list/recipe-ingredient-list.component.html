@@ -1,0 +1,64 @@
+<h4>Ingrédients</h4>
+<div class="ingredients-list">
+    <div class="ingredient-item" *ngFor="let ingredient of recipeIngredients">
+        <span>
+            {{ ingredient.name }} ({{ ingredient.quantity }} {{ getTranslation(ingredient.unit) }})
+          </span>
+      
+          <span
+            class="fa fa-trash delete-icon"
+            *ngIf="editingMode"
+            (click)="removeIngredient(ingredient.ingredientId)"
+            title="Supprimer"
+          ></span>
+    </div>
+</div>
+<div class="ingredient-form" *ngIf="editingMode">
+    <!-- Champ de recherche -->
+    <div class="form-group full-width">
+      <label for="ingredient-search">Ajouter un ingrédient</label>
+      <input
+        id="ingredient-search"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="searchIngredients()"
+        placeholder="Rechercher un ingrédient..."
+        autocomplete="off"
+      />
+      <!-- Suggestions -->
+      <ul *ngIf="filteredIngredients.length" class="suggestion-list">
+        <li *ngFor="let suggestion of filteredIngredients"
+            (click)="selectIngredient(suggestion)">
+          {{ suggestion.name }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Quantité -->
+    <div class="form-group">
+      <label for="quantity">Quantité</label>
+      <input
+        id="quantity"
+        type="number"
+        min="0"
+        [(ngModel)]="quantity"
+      />
+    </div>
+
+    <!-- Unité -->
+    <div class="form-group">
+      <label for="unit">Unité</label>
+      <select [(ngModel)]="unit">
+        <option *ngFor="let unit of unitEntries" [value]="unit">
+          {{ getTranslation(unit) }}
+        </option>
+      </select>
+    </div>
+
+
+    <!-- Boutons -->
+    <div class="form-buttons">
+      <button type="button" class="add-button" (click)="addIngredient()" [disabled]="!canAddIngredient()">Ajouter</button>
+      <button type="button" class="secondary" (click)="clearIngredientForm()">Effacer</button>
+    </div>
+  </div>

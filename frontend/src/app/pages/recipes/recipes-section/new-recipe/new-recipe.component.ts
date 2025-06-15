@@ -4,13 +4,14 @@ import { BaseRecipeComponent } from '../base-recipe/base-recipe.component';
 import { RecipeDto } from '../../../../generated';
 import { CommonModule } from '@angular/common';
 import { AutoResizeTextareaDirective } from '../../../../directives/auto-resize-textarea.directive';
+import { RecipeIngredientListComponent } from '../recipe/recipe-ingredient-list/recipe-ingredient-list.component';
 
 @Component({
   selector: 'app-new-recipe',
   standalone: true,
   templateUrl: './new-recipe.component.html',
   styleUrls: ['./new-recipe.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, AutoResizeTextareaDirective]
+  imports: [CommonModule, ReactiveFormsModule, AutoResizeTextareaDirective, RecipeIngredientListComponent]
   
 })
 export class NewRecipeComponent extends BaseRecipeComponent {
