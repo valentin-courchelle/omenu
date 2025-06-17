@@ -19,7 +19,7 @@
 
   <!-- Liste des recettes -->
   <div class="recipes-list">
-    <div *ngIf="showNewRecipe" class="new-recipe-overlay">
+    <div *ngIf="showNewRecipe">
       <app-new-recipe [recipe]="{name: '', duration: 0, nbPeople: 0, rating: 0, ingredients: [], description: '', season: []}"
       (closeNewRecipe)="showNewRecipe = false"
       (confirmNewRecipe)="saveNewRecipe($event)"></app-new-recipe>
