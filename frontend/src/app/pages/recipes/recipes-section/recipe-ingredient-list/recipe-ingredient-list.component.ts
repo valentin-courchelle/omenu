@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IngredientDto, RecipeDto, RecipeIngredientDto } from '../../../../../generated';
-import { RecipeService } from '../../../services/recipe.service';
-import { IngredientService } from '../../../services/ingredient.service';
+import { IngredientDto, RecipeDto, RecipeIngredientDto } from '../../../../generated';
+import { RecipeService } from '../../services/recipe.service';
+import { IngredientService } from '../../services/ingredient.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { unitTranslations } from '../../../type-translations';
+import { unitTranslations } from '../../type-translations';
+import { max } from 'rxjs';
+import { typeColors } from '../../type-color';
 
 @Component({
   selector: 'app-recipe-ingredient-list',
@@ -27,6 +29,7 @@ export class RecipeIngredientListComponent implements OnInit {
   allIngredients: IngredientDto[] = [];
   searchTerm: string = '';
   filteredIngredients: IngredientDto[] = [];
+  selectedIndex = -1;
   selectedIngredient: IngredientDto | null = null;
 
   quantity: number | null = null;
@@ -58,7 +61,8 @@ export class RecipeIngredientListComponent implements OnInit {
     }
     // Filter the 5 first ingredients based on the search term order by name
     this.filteredIngredients = this.allIngredients.filter(ingredient =>
-      ingredient.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      ingredient.name.toLowerCase().includes(this.searchTerm.toLowerCase()) 
+      && this.recipeIngredients.every(ri => ri.ingredientId !== ingredient.id)
     )
     .sort((a,b) => a.name.localeCompare(b.name))
     .slice(0, 5);
@@ -67,6 +71,7 @@ export class RecipeIngredientListComponent implements OnInit {
       this.selectedIngredient = this.filteredIngredients[0];
       this.filteredIngredients = [];
     }
+    this.selectedIndex = -1;
   }
 
   selectIngredient(ingredient: IngredientDto): void {
@@ -74,8 +79,34 @@ export class RecipeIngredientListComponent implements OnInit {
     this.selectedIngredient = ingredient;
     this.searchTerm = this.selectedIngredient.name;
     this.filteredIngredients = [];
+    this.selectedIndex = -1; 
   }
-  
+
+  onKeyDown(event: KeyboardEvent): void {
+    const maxIndex = this.filteredIngredients.length - 1;
+    switch (event.key) {
+      case 'ArrowDown':
+        if (this.selectedIndex < maxIndex) {
+          this.selectedIndex++;
+        }
+        event.preventDefault();
+        break;
+
+      case 'ArrowUp':
+        if (this.selectedIndex > 0) {
+          this.selectedIndex--;
+        }
+        event.preventDefault();
+        break;
+
+      case 'Enter':
+        if (this.selectedIndex >= 0 && this.selectedIndex <= maxIndex) {
+          this.selectIngredient(this.filteredIngredients[this.selectedIndex]);
+        }
+        event.preventDefault();
+        break;
+    }
+  }
 
   addIngredient(): void {
     if (this.selectedIngredient && this.quantity && this.unit) {
@@ -118,6 +149,10 @@ export class RecipeIngredientListComponent implements OnInit {
 
   canAddIngredient(): boolean {
     return !!this.selectedIngredient && !!this.quantity && !!this.unit;
+  }
+
+  getColor(type: IngredientDto.TypeEnum | undefined): string {
+    return type ? typeColors[type] || '#f9f9f9' : '#f9f9f9';
   }
   
 

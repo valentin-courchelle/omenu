@@ -79,6 +79,23 @@
     max-height: 200px;
     overflow-y: auto;
     padding-right: 5px;
+  
+    .ingredients-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 10px; 
+      padding: 10px 0;
+    }
+  
+    .ingredient-item {
+      background: #f9f9f9;
+      padding: 8px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      border: 1px solid #ddd;
+    }
 
     .description {
       white-space: pre-line;

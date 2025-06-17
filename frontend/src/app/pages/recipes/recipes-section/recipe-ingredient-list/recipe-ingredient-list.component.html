@@ -1,8 +1,9 @@
 <h4>Ingrédients</h4>
 <div class="ingredients-list">
-    <div class="ingredient-item" *ngFor="let ingredient of recipeIngredients">
+  <div class="ingredient-item" *ngFor="let ingredient of recipeIngredients" 
+  [ngStyle]="{ 'background-color': getColor(ingredient.type)}">
         <span>
-            {{ ingredient.name }} ({{ ingredient.quantity }} {{ getTranslation(ingredient.unit) }})
+            {{ ingredient.name }} ({{ ingredient.quantity }}{{ getTranslation(ingredient.unit) ? ' ' + getTranslation(ingredient.unit) : '' }})
           </span>
       
           <span
@@ -22,12 +23,14 @@
         type="text"
         [(ngModel)]="searchTerm"
         (input)="searchIngredients()"
+        (keydown)="onKeyDown($event)"
         placeholder="Rechercher un ingrédient..."
         autocomplete="off"
       />
       <!-- Suggestions -->
       <ul *ngIf="filteredIngredients.length" class="suggestion-list">
-        <li *ngFor="let suggestion of filteredIngredients"
+        <li *ngFor="let suggestion of filteredIngredients; let i = index"
+            [class.selected]="i === selectedIndex"
             (click)="selectIngredient(suggestion)">
           {{ suggestion.name }}
         </li>
