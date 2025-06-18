@@ -1,11 +1,41 @@
-<h4>Ingrédients</h4>
+<div class="ingredient-header">
+  <h4>Ingrédients</h4>
+  <div class="sort-dropdown-container" (click)="$event.stopPropagation()">
+    <i class="fa fa-sort sort-icon" (click)="toggleSortDropdown($event)"></i>
+    <div class="sort-dropdown" *ngIf="showSortDropdown">
+      <div
+        class="sort-option"
+        [class.active]="sortOption === 'name'"
+        (click)="sortOption !== 'name' ? setSort('name') : setSort('none')"
+      >
+        Nom
+      </div>
+      <div
+        class="sort-option"
+        [class.active]="sortOption === 'type'"
+        (click)="sortOption !== 'type' ? setSort('type') : setSort('none')"
+      >
+        Type
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="ingredients-list">
-  <div class="ingredient-item" *ngFor="let ingredient of recipeIngredients" 
-  [ngStyle]="{ 'background-color': getColor(ingredient.type)}">
+  <div class="ingredient-item" *ngFor="let ingredient of sortedIngredients()">
         <span>
             {{ ingredient.name }} ({{ ingredient.quantity }}{{ getTranslation(ingredient.unit) ? ' ' + getTranslation(ingredient.unit) : '' }})
           </span>
       
+          <!-- La pastille de type -->
+          <span
+          class="ingredient-badge"
+          [ngStyle]="{ 'background-color': getColor(ingredient.type) }"
+          [title]="ingredient.type"
+          ></span>
+
           <span
             class="fa fa-trash delete-icon"
             *ngIf="editingMode"

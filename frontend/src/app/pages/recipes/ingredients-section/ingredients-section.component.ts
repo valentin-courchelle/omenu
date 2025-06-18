@@ -53,15 +53,13 @@ export class IngredientsSectionComponent implements OnInit {
       next: () => {
         this.ingredientService.ingredients$().subscribe({
           next: data => {
-            console.log('Réponse reçue du backend :', data);
-            console.log('Type de la donnée :', typeof data);
             this.ingredients = data; 
             this.applySort();       
           },
-          error: err => console.log('Erreur lors du chargement des ingrédients', err),
+          error: err => console.log('Error while loding ingredients', err),
         });
       },
-      error: err => console.log('Erreur lors de l\'appel à getIngredients', err),
+      error: err => console.log('Error while calling getIngredients', err),
     });
   
     this.ingredientTypes = Object.values(IngredientDto.TypeEnum);

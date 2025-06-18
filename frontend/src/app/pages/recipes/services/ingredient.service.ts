@@ -62,6 +62,10 @@ export class IngredientService {
     );
   }
 
+  getCachedIngredients(): IngredientDto[] {
+    return this.ingredientsCache.value;
+  }
+
   
   updateIngredient(id: number, ingredient: IngredientDto): Observable<IngredientDto> {
     return this.apiService.updateIngredient(id, ingredient ).pipe(

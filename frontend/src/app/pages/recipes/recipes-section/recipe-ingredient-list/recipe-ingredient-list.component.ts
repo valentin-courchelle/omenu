@@ -5,7 +5,7 @@ import { IngredientService } from '../../services/ingredient.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { unitTranslations } from '../../type-translations';
-import { max } from 'rxjs';
+import { HostListener } from '@angular/core';
 import { typeColors } from '../../type-color';
 
 @Component({
@@ -26,7 +26,6 @@ export class RecipeIngredientListComponent implements OnInit {
   unitEntries: RecipeIngredientDto.UnitEnum[] = [];
 
   newRecieIngredient: RecipeIngredientDto | null = null;
-  allIngredients: IngredientDto[] = [];
   searchTerm: string = '';
   filteredIngredients: IngredientDto[] = [];
   selectedIndex = -1;
@@ -34,23 +33,42 @@ export class RecipeIngredientListComponent implements OnInit {
 
   quantity: number | null = null;
   unit : RecipeIngredientDto.UnitEnum | null = null;
+
+  sortOption: 'none' | 'name' | 'type' = 'none';
+  showSortDropdown = false;
+  sortByName = false;
+  sortByType = false;
+
   
   ngOnInit(): void {
-    // Get all ingredients from the service
-    this.ingredientService.getIngredients().subscribe({
-      next: () => {
-        this.ingredientService.ingredients$().subscribe({
-          next: data => {
-            this.allIngredients = data;
-          },
-          error: err => console.error('Error fetching ingredients:', err)
-        });
-      }
-    }
+    this.unitEntries = Object.values(RecipeIngredientDto.UnitEnum).sort(
+      (a, b) => this.getTranslation(a).localeCompare(this.getTranslation(b))
     );
-    this.unitEntries = Object.values(RecipeIngredientDto.UnitEnum).sort((a,b)=> this.getTranslation(a).localeCompare(this.getTranslation(b)));
 
+    if (this.ingredientService.getCachedIngredients().length === 0) {
+      this.ingredientService.getIngredients().subscribe({
+        error: err => console.error('Error fetching ingredients:', err)
+      });
+    }
+    const savedSortOption = localStorage.getItem('recipeIngredientSortOption');
+    if(savedSortOption) {
+      this.sortOption = savedSortOption as 'none' | 'name' | 'type';
+    }
   }
+
+
+  sortedIngredients() {
+    const ingredients = [...this.recipeIngredients];
+    switch (this.sortOption) {
+      case 'name':
+        return ingredients.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+      case 'type':
+        return ingredients.sort((a, b) => (a.type ?? '').localeCompare(b.type ?? ''));
+      default:
+        return ingredients;
+    }
+  }
+
 
   searchIngredients(): void {
     if(this.selectedIngredient && this.selectedIngredient.name !== this.searchTerm){
@@ -60,7 +78,7 @@ export class RecipeIngredientListComponent implements OnInit {
       this.filteredIngredients = [];
     }
     // Filter the 5 first ingredients based on the search term order by name
-    this.filteredIngredients = this.allIngredients.filter(ingredient =>
+    this.filteredIngredients = this.ingredientService.getCachedIngredients().filter(ingredient =>
       ingredient.name.toLowerCase().includes(this.searchTerm.toLowerCase()) 
       && this.recipeIngredients.every(ri => ri.ingredientId !== ingredient.id)
     )
@@ -154,6 +172,26 @@ export class RecipeIngredientListComponent implements OnInit {
   getColor(type: IngredientDto.TypeEnum | undefined): string {
     return type ? typeColors[type] || '#f9f9f9' : '#f9f9f9';
   }
+
+  toggleSortDropdown(event: MouseEvent): void {
+    event.stopPropagation(); 
+    this.showSortDropdown = !this.showSortDropdown;
+  }
+
+  setSort(option: 'name' | 'type' | 'none'): void{
+    this.sortOption = option;
+    this.showSortDropdown = false;
+    localStorage.setItem('recipeIngredientSortOption', this.sortOption);
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sort-dropdown-container')) {
+      this.showSortDropdown = false;
+    }
+  }
+
   
 
 }
